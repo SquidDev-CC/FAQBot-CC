@@ -48,13 +48,12 @@ async def on_command( ctx ):
 
 @bot.command( name='faq', aliases=['f', 'info', 'i'] )
 @commands.guild_only()
-async def faq( ctx, *args ):
+async def faq( ctx, *, search ):
     """Retrieves answers related to given keyword(s)."""
     results = []
-    for search in args:
-        for f in faqs:
-            if re.search( f[0], search ):
-                results.append( discord.Embed( title=f[1], url="https://github.com/Wendelstein7/FAQBot-CC", colour=discord.Colour( 0x00e6e6 ), description=f[2] ) )
+    for f in faqs:
+        if re.search( f[0], search ):
+            results.append( discord.Embed( title=f[1], url="https://github.com/Wendelstein7/FAQBot-CC", colour=discord.Colour( 0x00e6e6 ), description=f[2] ) )
     if len( results ) > 0:
         await ctx.send( content="I found the following " + str( len( results ) ) + " faq(s)" )
         for result in results:

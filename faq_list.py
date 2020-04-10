@@ -1,6 +1,9 @@
-# ("keyword regex", "subject title", "filename")
+# ("keyword regex", "subject", "filename")
 
 faqs = [
+    # ("example", "Example FAQ", "example.md"),
     ("(servers?)|(multiplayer)", "ComputerCraft MultiPlayer Servers", "servers.md"),
-    ("example", "Example FAQ", "example.md")
+    ("((turtle)? ?(re)?fuel(ing)?)|((turtle.)?getFuelLevel)|((turtle.)?refuel)", "Turtle fuel", "turtle_fuel.md"),
+    ("paste(bin)?", "Pastebin", "pastebin.md"),
+    ("center(ing)? ?(text)?", "Centering text", "center_write.md")
 ]

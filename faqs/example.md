@@ -1,7 +1,6 @@
 **Subject in one or a few words, in bold**
 
-An empty line
-Followed by a body containing information, an explanation or an elaboration regarding the subject.
+An empty line, followed by a body containing information, an explanation or an elaboration regarding the subject.
 
 This body can contain a subset of markdown with the following attributes:
 ```lua
@@ -18,3 +17,4 @@ __underlined text__,
 
 Make sure to write in understandable British English, Wiki-style.
 Refer to your sources of information where possible, preferably to [wiki.computercraft.cc](https://wiki.computercraft.cc) articles.
+The text must be concise, brief and comfortable to read.
