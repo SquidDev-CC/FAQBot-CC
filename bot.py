@@ -49,11 +49,11 @@ async def on_command( ctx ):
 @bot.command( name='faq', aliases=['f', 'info', 'i'] )
 @commands.guild_only()
 async def faq( ctx, *, search ):
-    """Retrieves answers related to given keyword(s)."""
+    """Retrieves FAQs related to given keyword(s)."""
     results = []
     for f in faqs:
         if re.search( f[0], search ):
-            results.append( discord.Embed( title=f[1], url="https://github.com/Wendelstein7/FAQBot-CC", colour=discord.Colour( 0x00e6e6 ), description=f[2] ) )
+            results.append( discord.Embed( title=f[1], colour=discord.Colour( 0x00e6e6 ), description=f[2] ) )
     if len( results ) > 0:
         await ctx.send( content="I found the following " + str( len( results ) ) + " faq(s)" )
         for result in results:
@@ -66,15 +66,18 @@ async def faq( ctx, *, search ):
 async def faq_error( ctx, error ):
     if isinstance( error, commands.MissingRequiredArgument ):
         await ctx.send( content="Missing arguments! Please provide keywords to search for." )
+    else:
+        await ctx.send("An unexpected error occurred when processing the command.")
 
 
 @bot.command( name='about', aliases=[] )
 async def about( ctx ):
-    """Shows information about the bot aswell as the relevant version numbers, uptime and useful links."""
+    """Shows information about the bot as well as the relevant version numbers, uptime and useful links."""
     embed = discord.Embed( title="ComputerCraft FAQ Bot", colour=discord.Colour( 0x00e6e6 ), url="https://github.com/Wendelstein7/FAQBot-CC", description="A Discord bot for answering frequently asked questions regarding CC. Please contribute and expand the list of answers on [GitHub](https://github.com/Wendelstein7/FAQBot-CC)!" )
     embed.set_thumbnail( url=bot.user.avatar_url )
-    embed.add_field( name=":information_source: **Commands**", value="Please use the `%help` to list all possible commands.", inline=True )
+    embed.add_field( name=":information_source: **Commands**", value="Please use the `%help` to list all possible commands.\nUse `%f <search>` to find faqs related to your search.", inline=True )
     embed.add_field( name=":hash: **Developers**", value="**HydroNitrogen** as creator and other contributors mentioned on GitHub.", inline=True )
+    embed.add_field( name=":asterisk: **FAQs**", value="Currently there are " + str( len( faqs ) ) + " FAQs loaded into memory.", inline=True)
     embed.add_field( name=":new: **Version information**", value="Bot version: `{}`\nDiscord.py version: `{}`\nPython version: `{}`".format( date.fromtimestamp( os.path.getmtime( 'bot.py' ) ), discord.__version__, sys.version.split( ' ' )[0] ), inline=True )
     embed.add_field( name=":up: **Uptime information**", value="Bot started: `{}`\nBot uptime: `{}`".format( starttime.strftime( "%Y-%m-%d %H:%M:%S UTC" ), (datetime.utcnow().replace( microsecond=0 ) - starttime.replace( microsecond=0 )) ), inline=True )
     await ctx.send( embed=embed )
@@ -86,10 +89,10 @@ for faq in faq_list.faqs:
         file = open( 'faqs\\' + faq[2] )
         faqs.append( (faq[0], faq[1], file.read().strip()) )
     except IOError:
-        print( 'Error when reading faq file...' )
+        print( 'An error occurred when reading faq file...' )
     finally:
         file.close()
-print( 'Successfully loaded ' + str( len( faqs ) ) + '!' )
+print( 'Successfully loaded ' + str( len( faqs ) ) + ' FAQs!' )
 
 with open( 'token', 'r' ) as file:
     content = file.read().strip()
