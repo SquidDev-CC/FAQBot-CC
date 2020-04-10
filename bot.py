@@ -85,8 +85,8 @@ async def about( ctx ):
 
 for faq in faq_list.faqs:
     try:
-        print( 'Loading faqs\\' + faq[2] )
-        file = open( 'faqs\\' + faq[2] )
+        print( 'Loading faqs/' + faq[2] )
+        file = open( 'faqs/' + faq[2] )
         faqs.append( (faq[0], faq[1], file.read().strip()) )
     except IOError:
         print( 'An error occurred when reading faq file...' )
