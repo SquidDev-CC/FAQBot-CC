@@ -47,7 +47,6 @@ async def on_command( ctx ):
 
 
 @bot.command( name='faq', aliases=['f', 'info', 'i'] )
-@commands.guild_only()
 async def faq( ctx, *, search ):
     """Retrieves FAQs related to given keyword(s)."""
     results = []
