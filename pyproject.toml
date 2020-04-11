@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "faqbot-cc"
+version = "0.1.0"
+description = "A Discord bot for answering frequently asked questions regarding CC."
+authors = ["Wendelstein7 <23213464+Wendelstein7@users.noreply.github.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/Wendelstein7/FAQBot-CC"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+"discord.py" = "^1.3.3"
+
+[tool.poetry.dev-dependencies]
+pylint = "^2.4.4"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
