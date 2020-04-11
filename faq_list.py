@@ -1,6 +1,6 @@
 # ("keyword regex", "subject", "filename")
 
-faqs = [
+FAQS = [
     # ("example", "Example FAQ", "example.md"),
     ("(servers?)|(multiplayer)", "ComputerCraft MultiPlayer Servers", "servers.md"),
     ("((turtle)? ?(re)?fuel(ing)?)|((turtle.)?getFuelLevel)|((turtle.)?refuel)", "Turtle fuel", "turtle_fuel.md"),

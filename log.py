@@ -50,7 +50,8 @@ def configure() -> None:
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
-    # Register a custom formatter, which prints things coloured with the time, level and coponent name.
+    # Register a custom formatter, which prints things coloured with the time, level and coponent
+    # name.
     col_formatter = ColourFormatter(FORMAT, None, '%')
     col_formatter.default_msec_format = "%s.%03d"
 
@@ -59,4 +60,3 @@ def configure() -> None:
     str_handler.setLevel(logging.INFO)
 
     logger.addHandler(str_handler)
-

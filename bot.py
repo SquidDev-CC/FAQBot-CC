@@ -3,17 +3,14 @@
 # Discord bot for private use only.
 # Created by Wendelstein7, https://github.com/FAQBot-CC
 
-import discord
+from datetime import datetime, date
 import logging
-from discord.ext import commands
-
 import os
+import re
 import sys
 
-import datetime
-from datetime import datetime, date
-
-import re
+import discord
+from discord.ext import commands
 
 import faq_list
 import log
@@ -87,7 +84,7 @@ async def about( ctx ):
     await ctx.send( embed=embed )
 
 
-for faq in faq_list.faqs:
+for faq in faq_list.FAQS:
     try:
         LOG.info('Loading faqs/%s', faq[2])
         file = open( 'faqs/' + faq[2] )

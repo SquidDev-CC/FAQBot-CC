@@ -12,6 +12,7 @@ python = "^3.8"
 "discord.py" = "^1.3.3"
 
 [tool.poetry.dev-dependencies]
+pylint = "^2.4.4"
 
 [build-system]
 requires = ["poetry>=0.12"]
