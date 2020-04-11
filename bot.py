@@ -84,7 +84,7 @@ async def doc(ctx, *, search):
         if 'summary' in method: embed.description = method['summary']
         await ctx.send(embed=embed)
     else:
-        await ctx.send(content="Cannot find method '{}'. Please check your spelling, or contribute to the documentation at https://github.com/SquidDev/CC-Tweaked.".format(search))
+        await ctx.send(content="Cannot find method '{}'. Please check your spelling, or contribute to the documentation at https://github.com/SquidDev-CC/CC-Tweaked.".format(search))
 
 
 @bot.command( name='about', aliases=[] )
