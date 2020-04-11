@@ -3,9 +3,8 @@
 # Discord bot for private use only.
 # Created by Wendelstein7, https://github.com/FAQBot-CC
 
-print( "STARTING DISCORD BOT..." )
-
 import discord
+import logging
 from discord.ext import commands
 
 import os
@@ -17,11 +16,17 @@ from datetime import datetime, date
 import re
 
 import faq_list
+import log
+
+log.configure()
+
+LOG = logging.getLogger("FAQBot-CC")
 
 bot = commands.Bot( command_prefix='%' )
 starttime = datetime.utcnow()
 faqs = []
 
+LOG.info("Starting discord Bot")
 
 def msg_should_process( message ):  # do not process bot messages, own messages, non-default messages
     if (message.author.bot) or (message.author.id == bot.user.id) or (message.type is not discord.MessageType.default):  # or (message.guild is None):
@@ -32,8 +37,7 @@ def msg_should_process( message ):  # do not process bot messages, own messages,
 
 @bot.event
 async def on_ready():
-    print( 'Bot: Logged in as {} (id: {})\n'.format( bot.user.name, bot.user.id ) )
-
+    LOG.info('Bot: Logged in as %s (id: %s)', bot.user.name, bot.user.id)
 
 @bot.event
 async def on_message( message ):
@@ -43,7 +47,7 @@ async def on_message( message ):
 
 @bot.event
 async def on_command( ctx ):
-    print( '[{} UTC] Fired {} by {}'.format( datetime.utcnow(), ctx.command, ctx.author ) )
+    LOG.info('Fired %s by %s', ctx.command, ctx.author)
 
 
 @bot.command( name='faq', aliases=['f', 'info', 'i'] )
@@ -66,6 +70,7 @@ async def faq_error( ctx, error ):
     if isinstance( error, commands.MissingRequiredArgument ):
         await ctx.send( content="Missing arguments! Please provide keywords to search for." )
     else:
+        LOG.error("Error processing command: %s", error)
         await ctx.send("An unexpected error occurred when processing the command.")
 
 
@@ -84,14 +89,15 @@ async def about( ctx ):
 
 for faq in faq_list.faqs:
     try:
-        print( 'Loading faqs/' + faq[2] )
+        LOG.info('Loading faqs/%s', faq[2])
         file = open( 'faqs/' + faq[2] )
         faqs.append( (faq[0], faq[1], file.read().strip()) )
     except IOError:
-        print( 'An error occurred when reading faq file...' )
+        LOG.error( 'An error occurred when reading faq file...' )
     finally:
         file.close()
-print( 'Successfully loaded ' + str( len( faqs ) ) + ' FAQs!' )
+
+LOG.info('Successfully loaded %d FAQs!', len(faqs))
 
 with open( 'token', 'r' ) as file:
     content = file.read().strip()
