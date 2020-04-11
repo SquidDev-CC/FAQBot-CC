@@ -88,7 +88,7 @@ async def doc(ctx, *, search):
 @doc.error
 async def doc_error( ctx, error ):
     if isinstance( error, commands.MissingRequiredArgument ):
-        await ctx.send( content="Missing arguments! Please provide keywords to search for." )
+        await ctx.send( content="Missing arguments! Please provide a CC:T method to search for." )
     else:
         LOG.error("Error processing doc command: %s", error)
         await ctx.send("An unexpected error occurred when processing the command.")
