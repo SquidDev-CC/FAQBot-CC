@@ -45,7 +45,6 @@ async def on_message( message ):
     if msg_should_process( message ):
         await bot.process_commands( message )
 
-
 @bot.event
 async def on_command( ctx ):
     LOG.info('Fired %s by %s', ctx.command, ctx.author)
@@ -65,15 +64,15 @@ async def faq( ctx, *, search ):
     else:
         await ctx.send( content="Sorry, I did not find any faqs related to your search.\nPlease contribute to expand my faq list: <https://github.com/Wendelstein7/FAQBot-CC>" )
 
-
 @faq.error
 async def faq_error( ctx, error ):
     if isinstance( error, commands.MissingRequiredArgument ):
         await ctx.send( content="Missing arguments! Please provide keywords to search for." )
     else:
-        LOG.error("Error processing command: %s", error)
+        LOG.error("Error processing faq command: %s", error)
         await ctx.send("An unexpected error occurred when processing the command.")
 
+        
 @bot.command(name='doc', aliases=['d', 'docs'])
 async def doc(ctx, *, search):
     """Searches for a function with the current name, and returns its documentation."""
@@ -86,7 +85,15 @@ async def doc(ctx, *, search):
     else:
         await ctx.send(content="Cannot find method '{}'. Please check your spelling, or contribute to the documentation at https://github.com/SquidDev-CC/CC-Tweaked.".format(search))
 
+@doc.error
+async def doc_error( ctx, error ):
+    if isinstance( error, commands.MissingRequiredArgument ):
+        await ctx.send( content="Missing arguments! Please provide keywords to search for." )
+    else:
+        LOG.error("Error processing doc command: %s", error)
+        await ctx.send("An unexpected error occurred when processing the command.")
 
+        
 @bot.command( name='about', aliases=[] )
 async def about( ctx ):
     """Shows information about the bot as well as the relevant version numbers, uptime and useful links."""
