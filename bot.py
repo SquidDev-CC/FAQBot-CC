@@ -9,13 +9,13 @@ import logging
 import os
 import re
 import sys
+from urllib.request import urlopen
 
 import discord
 from discord.ext import commands
 
 import faq_list
 import log
-from cached_request import CachedRequest
 
 log.configure()
 
@@ -25,11 +25,7 @@ bot = commands.Bot( command_prefix='%' )
 starttime = datetime.utcnow()
 faqs = []
 
-# Fetch from tweaked.cc at most once per minute.
-cc_methods = CachedRequest(
-    60, "https://tweaked.cc/index.json",
-    lambda contents: { k.lower(): v for k, v in json.loads(contents).items() }
-)
+cc_methods = None
 
 LOG.info("Starting discord Bot")
 
@@ -76,13 +72,13 @@ async def faq_error( ctx, error ):
         LOG.error("Error processing faq command: %s", error)
         await ctx.send("An unexpected error occurred when processing the command.")
 
+        
 @bot.command(name='doc', aliases=['d', 'docs'])
 async def doc(ctx, *, search):
     """Searches for a function with the current name, and returns its documentation."""
-    methods = await cc_methods.get()
     search_k = search.lower()
-    if search_k in methods:
-        method = methods[search_k]
+    if search_k in cc_methods:
+        method = cc_methods[search_k]
         embed = discord.Embed(title=method['name'], url=method['source'])
         if 'summary' in method: embed.description = method['summary']
         await ctx.send(embed=embed)
@@ -97,7 +93,7 @@ async def doc_error( ctx, error ):
         LOG.error("Error processing doc command: %s", error)
         await ctx.send("An unexpected error occurred when processing the command.")
 
-
+        
 @bot.command( name='about', aliases=[] )
 async def about( ctx ):
     """Shows information about the bot as well as the relevant version numbers, uptime and useful links."""
@@ -109,6 +105,15 @@ async def about( ctx ):
     embed.add_field( name=":new: **Version information**", value="Bot version: `{}`\nDiscord.py version: `{}`\nPython version: `{}`".format( date.fromtimestamp( os.path.getmtime( 'bot.py' ) ), discord.__version__, sys.version.split( ' ' )[0] ), inline=True )
     embed.add_field( name=":up: **Uptime information**", value="Bot started: `{}`\nBot uptime: `{}`".format( starttime.strftime( "%Y-%m-%d %H:%M:%S UTC" ), (datetime.utcnow().replace( microsecond=0 ) - starttime.replace( microsecond=0 )) ), inline=True )
     await ctx.send( embed=embed )
+
+
+LOG.info("Loading CC:T method index.")
+req = urlopen("https://tweaked.cc/index.json")
+contents = req.read()
+req.close()
+
+cc_methods = { k.lower(): v for k, v in json.loads(contents).items() }
+LOG.info("Loaded %d methods.", len(cc_methods))
 
 for faq in faq_list.FAQS:
     try:

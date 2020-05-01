@@ -13,7 +13,6 @@ python = "^3.8"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.4.4"
-mypy = "^0.770"
 
 [build-system]
 requires = ["poetry>=0.12"]
