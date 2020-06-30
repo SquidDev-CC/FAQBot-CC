@@ -59,7 +59,7 @@ async def faq( ctx, *, search ):
     """Retrieves FAQs related to given keyword(s)."""
     results = []
     for f in faqs:
-        if re.search( f[0], search ):
+        if re.search( search, f[0] ):
             results.append( discord.Embed( title=f[1], colour=discord.Colour( 0x00e6e6 ), description=f[2] ) )
     if len( results ) > 0:
         await ctx.send( content="I found the following " + str( len( results ) ) + " faq(s)" )
