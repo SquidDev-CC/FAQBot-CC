@@ -1,4 +1,4 @@
-# ("keyword regex", "subject", "filename")
+# ("search", "subject", "filename")
 
 FAQS = [
     # ("example", "Example FAQ", "example.md"),
