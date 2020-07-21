@@ -22,10 +22,10 @@ end
 
 Some other yielding functions:
   - `os.pullEvent(_sFilter)`
-    - yields until an event occurs
-    - same as `os.pullEventRaw`, but will invoke an error if a `terminate` event occurs.
+    - Yields until an event occurs.
+    - Calls `os.pullEventRaw` then checks if the event is a `terminate` event, invoking an error if it is.
   - `os.pullEventRaw(_sFilter)`
-    - exactly the same as just `coroutine.yield(_sFilter)`
+    - Exactly the same as `coroutine.yield(_sFilter)`.
   - `rednet.receive()`
-    - yields until a rednet message is received
+    - Yields until a rednet message is received.
   
