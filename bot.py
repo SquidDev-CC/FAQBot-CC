@@ -4,6 +4,7 @@
 # Created by Wendelstein7, https://github.com/FAQBot-CC
 
 from datetime import datetime, date
+from typing import Callable, List, Tuple
 import json
 import logging
 import os
@@ -23,7 +24,7 @@ LOG = logging.getLogger("FAQBot-CC")
 
 bot = commands.Bot( command_prefix='%' )
 starttime = datetime.utcnow()
-faqs = []
+faqs: List[Tuple[str, str, str]] = []
 
 # Fetch from tweaked.cc at most once per minute.
 cc_methods = CachedRequest(
@@ -76,25 +77,46 @@ async def faq_error( ctx, error ):
         LOG.error("Error processing faq command: %s", error)
         await ctx.send("An unexpected error occurred when processing the command.")
 
-@bot.command(name='doc', aliases=['d', 'docs'])
-async def doc(ctx, *, search):
-    """Searches for a function with the current name, and returns its documentation."""
+
+async def search_docs(ctx, search: str, link: Callable[[dict], str]):
+    """Search the documentation with a query and link to the result"""
     methods = await cc_methods.get()
     search_k = search.lower()
     if search_k in methods:
         method = methods[search_k]
-        embed = discord.Embed(title=method['name'], url=method['source'])
-        if 'summary' in method: embed.description = method['summary']
+        embed = discord.Embed(title=method["name"], url=link(method))
+        if "summary" in method:
+            embed.description = method["summary"]
         await ctx.send(embed=embed)
     else:
-        await ctx.send(content="Cannot find method '{}'. Please check your spelling, or contribute to the documentation at https://github.com/SquidDev-CC/CC-Tweaked.".format(search))
+        await ctx.send(content=f"Cannot find method '{search}'. Please check your spelling, or contribute to the documentation at https://github.com/SquidDev-CC/CC-Tweaked.")
+
+
+@bot.command(name="doc", aliases=["d", "docs"])
+async def doc(ctx, *, search: str):
+    """Searches for a function with the current name, and returns its documentation."""
+    def build_link(value):
+        url = f"https://tweaked.cc/module/{value['module']}.html"
+        if "section" in value:
+            url += f"#{value['section']}"
+        return url
+    await search_docs(ctx, search, build_link)
+
+
+@bot.command(name="source", aliases=["s"])
+async def source(ctx, *, search: str):
+    """Searches for a function with the current name, and returns a link to its source code."""
+    await search_docs(ctx, search, lambda x: x["source"])
+
 
 @doc.error
-async def doc_error( ctx, error ):
-    if isinstance( error, commands.MissingRequiredArgument ):
-        await ctx.send( content="Missing arguments! Please provide a CC:T method to search for." )
+@source.error
+async def doc_error(ctx, error):
+    """Reports an error on the source and doc commands."""
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(content="Missing arguments! Please provide a CC:T method to search for.")
     else:
-        LOG.error("Error processing doc command: %s", error)
+        LOG.error("Error processing command: %s", error)
         await ctx.send("An unexpected error occurred when processing the command.")
 
 
