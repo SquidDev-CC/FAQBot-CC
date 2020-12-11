@@ -15,7 +15,7 @@ edit /pastebin
 ```
 Then go to line 24, and replace this:
 ```
-"https://pastebin.com/raw.php?i="..textutils.urlEncode( paste )
+"http://pastebin.com/raw.php?i="..textutils.urlEncode( paste )
 ```
 with this:
 ```
