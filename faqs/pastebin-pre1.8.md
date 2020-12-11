@@ -5,7 +5,6 @@ Pastebin changed the way files are downloaded a few years ago. This means that o
 Here are two methods you can use to fix the `pastebin` program and make it work on old versions of ComputerCraft.
 
 **Using a resource pack (MC 1.6.1 - 1.7.10)**
-
 This method fixes the program for all computers (in all worlds on singleplayer), but it requires the server owner to install a resource pack if used for a server. Simply download [this resource pack](https://drive.google.com/file/d/1syLH68L5ToH8GU32SCnyKu_FpS38OJ4G/view?usp=sharing) and install it into your `resourcepacks` folder, or into the server's installation directory. Then restart Minecraft and apply the resource pack. After that, the default `pastebin` program should function normally.
 
 **Manually patching the program**
