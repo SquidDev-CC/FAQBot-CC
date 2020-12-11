@@ -4,6 +4,8 @@
 # Created by Wendelstein7, https://github.com/FAQBot-CC
 
 from datetime import datetime, date
+from difflib import SequenceMatcher
+from typing import Callable, List, Tuple, Iterable
 import json
 import logging
 import os
@@ -23,12 +25,12 @@ LOG = logging.getLogger("FAQBot-CC")
 
 bot = commands.Bot( command_prefix='%' )
 starttime = datetime.utcnow()
-faqs = []
+faqs: List[Tuple[str, str, str]] = []
 
 # Fetch from tweaked.cc at most once per minute.
 cc_methods = CachedRequest(
     60, "https://tweaked.cc/index.json",
-    lambda contents: { k.lower(): v for k, v in json.loads(contents).items() }
+    lambda contents: { k.lower(): { "original_name": k, **v } for k, v in json.loads(contents).items() }
 )
 
 LOG.info("Starting discord Bot")
@@ -76,25 +78,75 @@ async def faq_error( ctx, error ):
         LOG.error("Error processing faq command: %s", error)
         await ctx.send("An unexpected error occurred when processing the command.")
 
-@bot.command(name='doc', aliases=['d', 'docs'])
-async def doc(ctx, *, search):
-    """Searches for a function with the current name, and returns its documentation."""
+
+
+def score_methods(methods: Iterable[str], search: str, threshold: float = 0.8):
+    for method in methods:
+        score = SequenceMatcher(None, method, search).ratio()
+        if score >= threshold:
+            yield method, score
+
+
+def generate_embed(method: dict, link: Callable[[dict], str]) -> discord.Embed:
+    embed = discord.Embed(title=method["name"], url=link(method))
+    if "summary" in method:
+        embed.description = method["summary"]
+    return embed
+
+
+async def search_docs(ctx, search: str, link: Callable[[dict], str]) -> None:
+    """Search the documentation with a query and link to the result"""
     methods = await cc_methods.get()
+
     search_k = search.lower()
     if search_k in methods:
-        method = methods[search_k]
-        embed = discord.Embed(title=method['name'], url=method['source'])
-        if 'summary' in method: embed.description = method['summary']
-        await ctx.send(embed=embed)
-    else:
-        await ctx.send(content="Cannot find method '{}'. Please check your spelling, or contribute to the documentation at https://github.com/SquidDev-CC/CC-Tweaked.".format(search))
+        await ctx.send(embed=generate_embed(methods[search_k], link))
+        return
+
+    # We've not found a perfect match, so find an approximate one. A "good" match
+    # is either a unique one, or one with a significantly higher score than the
+    # next best one.
+    best_matches = sorted(score_methods(methods, search_k), key=lambda k: k[1], reverse=True)
+    if (
+        len(best_matches) == 1 or 
+        (len(best_matches) >= 2 and best_matches[0][1] >= best_matches[1][1] + 0.05)
+    ):
+        best_match, _ = best_matches[0]
+        method = methods[best_match]
+        await ctx.send(
+            content=f"Cannot find '{search}', using '{method['original_name']}'' instead.",
+            embed=generate_embed(method, link)
+        )
+        return
+
+    await ctx.send(content=f"Cannot find method '{search}'. Please check your spelling, or contribute to the documentation at https://github.com/SquidDev-CC/CC-Tweaked.")
+
+
+@bot.command(name="doc", aliases=["d", "docs"])
+async def doc(ctx, *, search: str):
+    """Searches for a function with the current name, and returns its documentation."""
+    def build_link(value):
+        url = f"https://tweaked.cc/module/{value['module']}.html"
+        if "section" in value:
+            url += f"#{value['section']}"
+        return url
+    await search_docs(ctx, search, build_link)
+
+
+@bot.command(name="source", aliases=["s"])
+async def source(ctx, *, search: str):
+    """Searches for a function with the current name, and returns a link to its source code."""
+    await search_docs(ctx, search, lambda x: x["source"])
+
 
 @doc.error
-async def doc_error( ctx, error ):
-    if isinstance( error, commands.MissingRequiredArgument ):
-        await ctx.send( content="Missing arguments! Please provide a CC:T method to search for." )
+@source.error
+async def doc_error(ctx, error):
+    """Reports an error on the source and doc commands."""
+    if isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(content="Missing arguments! Please provide a CC:T method to search for.")
     else:
-        LOG.error("Error processing doc command: %s", error)
+        LOG.error("Error processing command: %s", error)
         await ctx.send("An unexpected error occurred when processing the command.")
 
 
