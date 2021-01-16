@@ -125,12 +125,7 @@ async def search_docs(ctx, search: str, link: Callable[[dict], str]) -> None:
 @bot.command(name="doc", aliases=["d", "docs"])
 async def doc(ctx, *, search: str):
     """Searches for a function with the current name, and returns its documentation."""
-    def build_link(value):
-        url = f"https://tweaked.cc/module/{value['module']}.html"
-        if "section" in value:
-            url += f"#{value['section']}"
-        return url
-    await search_docs(ctx, search, build_link)
+    await search_docs(ctx, search, lambda x: f"https://tweaked.cc/{x['url']}")
 
 
 @bot.command(name="source", aliases=["s"])
