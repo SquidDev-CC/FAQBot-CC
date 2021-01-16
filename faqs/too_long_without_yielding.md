@@ -28,4 +28,3 @@ Some other yielding functions:
     - Exactly the same as `coroutine.yield(_sFilter)`.
   - `rednet.receive()`
     - Yields until a rednet message is received.
-  
