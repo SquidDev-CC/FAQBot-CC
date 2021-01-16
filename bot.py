@@ -1,7 +1,7 @@
 # FAQBot-CC
 #
 # Discord bot for private use only.
-# Created by Wendelstein7, https://github.com/FAQBot-CC
+# Created by Wendelstein7
 
 from datetime import datetime, date
 from difflib import SequenceMatcher
@@ -68,7 +68,7 @@ async def faq( ctx, *, search ):
         for result in results:
             await ctx.send( embed=result )
     else:
-        await ctx.send( content="Sorry, I did not find any faqs related to your search.\nPlease contribute to expand my faq list: <https://github.com/Wendelstein7/FAQBot-CC>" )
+        await ctx.send( content="Sorry, I did not find any faqs related to your search.\nPlease contribute to expand my faq list: <https://github.com/SquidDev-CC/FAQBot-CC>" )
 
 @faq.error
 async def faq_error( ctx, error ):
@@ -148,7 +148,7 @@ async def doc_error(ctx, error):
 @bot.command( name='about', aliases=[] )
 async def about( ctx ):
     """Shows information about the bot as well as the relevant version numbers, uptime and useful links."""
-    embed = discord.Embed( title="ComputerCraft FAQ Bot", colour=discord.Colour( 0x00e6e6 ), url="https://github.com/Wendelstein7/FAQBot-CC", description="A Discord bot for answering frequently asked questions regarding CC. Please contribute and expand the list of answers on [GitHub](https://github.com/Wendelstein7/FAQBot-CC)!" )
+    embed = discord.Embed( title="ComputerCraft FAQ Bot", colour=discord.Colour( 0x00e6e6 ), url="https://github.com/SquidDev-CC/FAQBot-CC", description="A Discord bot for answering frequently asked questions regarding CC. Please contribute and expand the list of answers on [GitHub](https://github.com/SquidDev-CC/FAQBot-CC)!" )
     embed.set_thumbnail( url=bot.user.avatar_url )
     embed.add_field( name=":information_source: **Commands**", value="Please use the `%help` to list all possible commands.\nUse `%f <search>` to find faqs related to your search.", inline=True )
     embed.add_field( name=":hash: **Developers**", value="**HydroNitrogen** as creator and other contributors mentioned on GitHub.", inline=True )

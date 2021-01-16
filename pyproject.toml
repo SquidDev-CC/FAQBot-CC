@@ -5,7 +5,7 @@ description = "A Discord bot for answering frequently asked questions regarding 
 authors = ["Wendelstein7 <23213464+Wendelstein7@users.noreply.github.com>"]
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/Wendelstein7/FAQBot-CC"
+repository = "https://github.com/SquidDev-CC/FAQBot-CC"
 
 [tool.poetry.dependencies]
 python = "^3.8"
