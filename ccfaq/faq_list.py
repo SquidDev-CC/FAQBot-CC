@@ -1,18 +1,60 @@
-# ("search", "subject", "filename")
+"""Loads FAQS from the appropriate directory"""
+from typing import Optional, List
+import dataclasses
+import logging
+import pathlib
+import re
 
-FAQS = [
-    # ("example", "Example FAQ", "example.md"),
-    ("multiplayer servers", "ComputerCraft MultiPlayer Servers", "servers.md"),
-    ("turtle refueling getFuelLevel", "Turtle fuel", "turtle_fuel.md"),
-    ("pastebin", "Pastebin", "pastebin.md"),
-    ("centering text", "Centering text", "center_write.md"),
-    ("don't ask to ask", "Don't ask to ask", "dontask.md"),
-    ("old pastebin pre1.8",
-     "Pastebin on old versions of ComputerCraft", "pastebin-pre1.8.md"),
-    ("passing or assigning functions", "Passing or assigning functions",
-     "passing_or_assigning_functions.md"),
-    ("error too long without yielding",
-     "Too long without yielding", "too_long_without_yielding.md"),
-    ("monitor rendering", "Monitor rendering issues", "monitor_rendering.md"),
-    ("local ips", "Accessing local IPs", "local_ips.md")
-]
+import yaml
+
+LOG = logging.getLogger(__name__)
+
+
+_front_matter = re.compile("---\n(.*?)\n---\n(.*)$", re.MULTILINE | re.DOTALL)
+
+
+@dataclasses.dataclass
+class FAQ:
+    """An FAQ"""
+    name: str
+    contents: str
+
+    title: str
+    search: str
+
+
+def load_file(path: pathlib.Path) -> Optional[FAQ]:
+    """Load a single FAQ from a file."""
+    with open(path) as handle:
+        contents = handle.read()
+
+    frontmatter = _front_matter.match(contents)
+    if not frontmatter:
+        LOG.error("No frontmatter for %s", path.name)
+        return None
+
+    try:
+        front = yaml.load(frontmatter[1], Loader=yaml.CSafeLoader)
+    except yaml.YAMLError:
+        LOG.exception("Cannot parse frontmatter %s", path)
+
+    if path.name == "example.md":
+        LOG.info("Skipping example file")
+        return None
+
+    front['name'] = path.name[:-3].replace('.', '')
+    front['contents'] = frontmatter[2].strip()
+
+    return FAQ(**front)
+
+
+def load() -> List[FAQ]:
+    """Load all FAQs"""
+    faqs: List[FAQ] = []
+    for file in pathlib.Path('faqs').glob('*.md'):
+        faq = load_file(file)
+        if faq is not None:
+            faqs.append(faq)
+
+    LOG.info("Loaded %d FAQs", len(faqs))
+    return faqs

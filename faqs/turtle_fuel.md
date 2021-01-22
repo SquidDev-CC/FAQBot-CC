@@ -1,3 +1,7 @@
+---
+title: Turtle fuel
+search: turtle refueling getFuelLevel
+---
 **The principles of fueling ComputerCraft Turtles**
 
 By default, ComputerCraft Turtles need fuel to move, *but not to rotate*.

@@ -1,3 +1,7 @@
+---
+title: Example FAQ
+search: example faq
+---
 **Subject in one or a few words, in bold**
 
 An empty line, followed by a body containing information, an explanation or an elaboration regarding the subject.

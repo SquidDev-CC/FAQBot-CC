@@ -1,3 +1,7 @@
+---
+title: ComputerCraft MultiPlayer Servers
+search: multiplayer servers
+---
 **Multiplayer Servers focused mainly at ComputerCraft**
 
 There currently exist a few fairly well-known servers that adopt ComputerCraft as their main feature.

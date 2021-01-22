@@ -1,3 +1,7 @@
+---
+title: Too long without yielding
+search: error too long without yielding
+---
 **Too Long Without Yielding**
 
 Computercraft has a builtin system which stops a single computer from running for too long at a time. After ~7 seconds of nonstop running, your computer will receive an error, "`Too long without yielding`."

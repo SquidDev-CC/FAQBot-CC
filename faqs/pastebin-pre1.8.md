@@ -1,3 +1,7 @@
+---
+title: Pastebin on old versions of ComputerCraft
+search: old pastebin pre1.8
+---
 **Pastebin on old versions of ComputerCraft**
 
 Pastebin changed the way files are downloaded a few years ago. This means that old versions of the `pastebin` program (1.75 and lower for Minecraft 1.7.0 or lower) can't download files anymore without a patch.

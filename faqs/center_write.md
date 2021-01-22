@@ -1,3 +1,7 @@
+---
+title: Centering text
+search: centering text
+---
 **Center-aligning text in ComputerCraft**
 
 There is no builtin function to write text center-aligned in ComputerCraft, but it is not hard to implement such a feature yourself.
