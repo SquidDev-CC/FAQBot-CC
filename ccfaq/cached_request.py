@@ -12,9 +12,10 @@ import logging
 
 LOG = logging.getLogger("cached_request")
 
-T = TypeVar('T') #pylint: disable=C0103
+T = TypeVar('T')  # pylint: disable=C0103
 
 __all__ = ["CachedResource", "CachedRequest"]
+
 
 class CachedResource(Generic[T]):
     """
@@ -53,6 +54,7 @@ class CachedResource(Generic[T]):
     async def fetch(self) -> T:
         """Recompute the contents of this cache."""
         raise NotImplementedError()
+
 
 class CachedRequest(CachedResource[T]):
     """

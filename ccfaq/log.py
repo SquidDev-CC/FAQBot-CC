@@ -15,6 +15,7 @@ COLOURS = {
     'ERROR': RED
 }
 
+
 def loop_exception_handler(loop: asyncio.AbstractEventLoop, context: Dict[str, Any]) -> None:
     """A custom error handler for the loop, which stops the loop before continuing to
        the default handler
@@ -25,9 +26,11 @@ def loop_exception_handler(loop: asyncio.AbstractEventLoop, context: Dict[str, A
         loop.stop()
     loop.default_exception_handler(context)
 
+
 class ColourFormatter(logging.Formatter):
     """Formats log messages using ANSI escape codes."""
-    def __init__(self, *args, **kwargs): # type: ignore
+
+    def __init__(self, *args, **kwargs):  # type: ignore
         super().__init__(*args, **kwargs)
 
     def format(self, record: logging.LogRecord) -> str:
@@ -36,7 +39,9 @@ class ColourFormatter(logging.Formatter):
             msg = "\033[1;3%dm%s\033[0m" % (COLOURS[record.levelname], msg)
         return msg
 
+
 FORMAT = "[%(asctime)s] [%(levelname)s/%(name)s] %(message)s"
+
 
 def configure() -> None:
     """Configure the root logger. This should be called once when the program is
