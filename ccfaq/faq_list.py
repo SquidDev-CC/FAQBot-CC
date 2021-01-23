@@ -34,7 +34,7 @@ def load_file(path: pathlib.Path) -> Optional[FAQ]:
         return None
 
     try:
-        front = yaml.load(frontmatter[1], Loader=yaml.CSafeLoader)
+        front = yaml.load(frontmatter[1], Loader=yaml.SafeLoader)
     except yaml.YAMLError:
         LOG.exception("Cannot parse frontmatter %s", path)
 
