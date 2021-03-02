@@ -81,12 +81,16 @@ class CachedRequest(CachedResource[T]):
                 with urlopen(request) as response:
                     self._etag = response.getheader("ETag")
                     contents = response.read()
-                LOG.info("Finished request")
+                LOG.info("Finished request.")
                 return self.compute(contents)
-            except HTTPError as err:
-                if err.code == 304:
+            except Exception as err:
+                if isinstance(err, HTTPError) and err.code == 304:
                     LOG.info("ETag matched, doing nothing")
                     return cast(T, self._resource)
+
+                LOG.exception("Failed to get resource.")
+                if self._resource is not None:
+                    return self._resource
                 raise err
 
         return await asyncio.get_event_loop().run_in_executor(None, get)

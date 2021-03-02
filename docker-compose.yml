@@ -1,4 +1,0 @@
-version: "3.8"
-services:
-  faqbot:
-    image: wendelstein7/faqbot:latest
