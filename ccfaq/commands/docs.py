@@ -56,12 +56,12 @@ class DocsCog(commands.Cog):
 
     async def _search_docs(self, ctx: Sendable, search: str, link: Callable[[dict], str]) -> None:
         """Search the documentation with a query and link to the result"""
-        LOG.info(f'event=search,search="{search}"')
+        LOG.info(f'event=search search="{search}"')
         methods = await self.methods.get()
 
         search_k = search.lower()
         if search_k in methods:
-            LOG.info(f'event=search.exact,search="{search}"')
+            LOG.info(f'event=search.exact search="{search}"')
             await ctx.send(embeds=[_embed(methods[search_k], link)])
             return
 
@@ -79,14 +79,14 @@ class DocsCog(commands.Cog):
         ):
             best_match, _ = best_matches[0]
             method = methods[best_match]
-            LOG.info(f'event=search.approx,search="{search}",result="{method["original_name"]}"')
+            LOG.info(f'event=search.approx search="{search}" result="{method["original_name"]}"')
             await ctx.send(
                 content=f"Cannot find '{search}', using '{method['original_name']}'' instead.",
                 embeds=[_embed(method, link)],
             )
             return
 
-        LOG.warning(f'event=search.missing,search="{search}"')
+        LOG.warning(f'event=search.missing search="{search}"')
         await ctx.send(content=f"Cannot find method '{search}'. Please check your spelling, or contribute to the documentation at https://github.com/SquidDev-CC/CC-Tweaked.")
 
     @commands.command(name="doc", aliases=["d", "docs"])
