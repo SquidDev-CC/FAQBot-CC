@@ -45,8 +45,10 @@ class CachedResource(Generic[T]):
 
         # Otherwise start a new task, wait on it, and then update the state
         self._in_progress = task = asyncio.create_task(self.fetch())
-        self._resource = result = await task
-        self._in_progress = None
+        try:
+            self._resource = result = await task
+        finally:
+            self._in_progress = None
         self._expire_at = monotonic() + self.time_to_live
 
         return result
