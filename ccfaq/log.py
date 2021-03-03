@@ -2,6 +2,7 @@
 import asyncio
 import logging
 import logging.config
+import sys
 from typing import Any, Dict
 import warnings
 
@@ -30,9 +31,6 @@ def loop_exception_handler(loop: asyncio.AbstractEventLoop, context: Dict[str, A
 class ColourFormatter(logging.Formatter):
     """Formats log messages using ANSI escape codes."""
 
-    def __init__(self, *args, **kwargs):  # type: ignore
-        super().__init__(*args, **kwargs)
-
     def format(self, record: logging.LogRecord) -> str:
         msg = super().format(record)
         if record.levelname in COLOURS:
@@ -57,11 +55,15 @@ def configure() -> None:
 
     # Register a custom formatter, which prints things coloured with the time, level and coponent
     # name.
-    col_formatter = ColourFormatter(FORMAT, None, '%')
-    col_formatter.default_msec_format = "%s.%03d"
+    formatter: logging.Formatter
+    if sys.stdout.isatty() and sys.stderr.isatty():
+        formatter = ColourFormatter(FORMAT, None, '%')
+    else:
+        formatter = logging.Formatter(FORMAT, None, '%')
+    formatter.default_msec_format = "%s.%03d"
 
     str_handler = logging.StreamHandler()
-    str_handler.setFormatter(col_formatter)
+    str_handler.setFormatter(formatter)
     str_handler.setLevel(logging.INFO)
 
     logger.addHandler(str_handler)
