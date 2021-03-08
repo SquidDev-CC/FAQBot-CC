@@ -27,8 +27,10 @@ async def _search(sending: Sendable, faqs: List[FAQ], search: str) -> None:
             results.append(_embed(faq))
 
     if len(results) > 0:
+        LOG.info(f'event=faq search="{search}"')
         await sending.send(content=f"I found the following {len(results)} faq(s)", embeds=results)
     else:
+        LOG.warning(f'event=faq.missing search="{search}"')
         await sending.send(content="Sorry, I did not find any faqs related to your search.\nPlease contribute to expand my faq list: <https://github.com/SquidDev-CC/FAQBot-CC>")
 
 
