@@ -56,12 +56,11 @@ class DocsCog(commands.Cog):
 
     async def _search_docs(self, ctx: Sendable, search: str, link: Callable[[dict], str]) -> None:
         """Search the documentation with a query and link to the result"""
-        LOG.info(f'event=search search="{search}"')
         methods = await self.methods.get()
 
         search_k = search.lower()
         if search_k in methods:
-            LOG.info(f'event=search.exact search="{search}"')
+            LOG.info(f'event=search search="{search}"')
             await ctx.send(embeds=[_embed(methods[search_k], link)])
             return
 
