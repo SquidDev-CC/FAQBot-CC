@@ -43,7 +43,7 @@ class DocsCog(commands.Cog):
     Provides a %doc (%d) and %source (%s) command.
     """
 
-    def __init__(self, slash: SlashCommand):
+    def __init__(self):
         self.methods = CachedRequest(
             60, "https://tweaked.cc/index.json",
             lambda contents: {
@@ -51,8 +51,6 @@ class DocsCog(commands.Cog):
                 for k, v in json.loads(contents).items()
             }
         )
-
-        slash.get_cog_commands(self)
 
     async def _search_docs(self, ctx: Sendable, search: str, link: Callable[[dict], str]) -> None:
         """Search the documentation with a query and link to the result"""
@@ -121,6 +119,7 @@ class DocsCog(commands.Cog):
         guild_ids=guild_ids(),
     )
     async def doc_slash(self, ctx: SlashContext, name: str) -> None:
+        await ctx.respond()
         await self._search_docs(ctx, name, lambda x: f"https://tweaked.cc/{x['url']}")
 
     @cog_slash(
@@ -136,4 +135,5 @@ class DocsCog(commands.Cog):
         guild_ids=guild_ids(),
     )
     async def doc_source(self, ctx: SlashContext, name: str) -> None:
+        await ctx.respond()
         await self._search_docs(ctx, name, lambda x: x["source"])

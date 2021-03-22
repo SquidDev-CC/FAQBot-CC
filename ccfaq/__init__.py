@@ -43,10 +43,10 @@ def run() -> None:
     faqs = ccfaq.faq_list.load()
     LOG.info('Successfully loaded %d FAQs!', len(faqs))
 
-    slash = SlashCommand(bot, auto_register=True)
+    slash = SlashCommand(bot, sync_commands=True)
 
     bot.add_cog(AboutCog(bot, faqs))
-    bot.add_cog(DocsCog(slash))
+    bot.add_cog(DocsCog())
     bot.add_cog(FAQCog(faqs))
 
     add_faq_slashcommands(slash, faqs)

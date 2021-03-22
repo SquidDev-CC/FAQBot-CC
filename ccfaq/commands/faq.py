@@ -76,9 +76,9 @@ def add_faq_slashcommands(slash: SlashCommand, faqs: List[FAQ]) -> None:
     but Discord's commands are still in beta, so nothing is really ready yet.
     """
 
-    if len(faqs) <= 10:
-        # Slash commands don't accept more than 10 options, so we only can
-        # register it then. Yes, that is incredibly stupid.
+    if len(faqs) <= 25:
+        # Slash commands don't accept more than 25 options, so we only can
+        # register it then. Thankfully we shouldn't hit that limit for a while.
         for faq in faqs:
             _add_slash(slash, faq)
     else:
