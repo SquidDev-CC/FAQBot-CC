@@ -1,9 +1,7 @@
 ---
-title: Pastebin
+title: The Pastebin program in ComputerCraft
 search: pastebin
 ---
-**The pastebin program in ComputerCraft**
-
 The pastebin program in ComputerCraft can be used to download and upload code from and to [pastebin.com](https://pastebin.com/).
 
 **Downloading**

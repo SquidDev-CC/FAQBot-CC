@@ -1,7 +1,8 @@
-"""Provides commands about the bot itself."""
+"""Searches the CC:Tweaked documentation."""
 
 from typing import Iterable, Tuple, Callable
 from difflib import SequenceMatcher
+import asyncio
 import logging
 import json
 
@@ -12,8 +13,9 @@ from discord_slash import SlashContext, SlashCommand
 import discord_slash.utils.manage_commands as manage_commands
 
 from ccfaq.cached_request import CachedRequest
-from ccfaq.commands import Sendable, SendableContext
+from ccfaq.commands import Sendable, SendableContext, COMMAND_TIME
 from ccfaq.config import guild_ids
+from ccfaq.utils import with_async_timer
 
 
 LOG = logging.getLogger(__name__)
@@ -87,11 +89,13 @@ class DocsCog(commands.Cog):
         await ctx.send(content=f"Cannot find method '{search}'. Please check your spelling, or contribute to the documentation at https://github.com/SquidDev-CC/CC-Tweaked.")
 
     @commands.command(name="doc", aliases=["d", "docs"])
+    @with_async_timer(COMMAND_TIME.labels('doc', 'message'))
     async def doc(self, ctx: commands.Context, *, search: str) -> None:
         """Searches for a function with the current name and returns its documentation."""
         await self._search_docs(SendableContext(ctx), search, lambda x: f"https://tweaked.cc/{x['url']}")
 
     @commands.command(name="source", aliases=["s"])
+    @with_async_timer(COMMAND_TIME.labels('source', 'message'))
     async def source(self, ctx: commands.Context, *, search: str) -> None:
         """Searches for a function with the current name, and returns a link to its source code."""
         await self._search_docs(SendableContext(ctx), search, lambda x: x["source"])
@@ -118,8 +122,8 @@ class DocsCog(commands.Cog):
         ],
         guild_ids=guild_ids(),
     )
+    @with_async_timer(COMMAND_TIME.labels('doc', 'slash'))
     async def doc_slash(self, ctx: SlashContext, name: str) -> None:
-        await ctx.respond()
         await self._search_docs(ctx, name, lambda x: f"https://tweaked.cc/{x['url']}")
 
     @cog_slash(
@@ -134,6 +138,9 @@ class DocsCog(commands.Cog):
         ],
         guild_ids=guild_ids(),
     )
+    @with_async_timer(COMMAND_TIME.labels('source', 'slash'))
     async def doc_source(self, ctx: SlashContext, name: str) -> None:
-        await ctx.respond()
         await self._search_docs(ctx, name, lambda x: x["source"])
+
+    def cog_unload(self) -> None:
+        asyncio.ensure_future(self.methods.close())

@@ -14,10 +14,11 @@ LOG = logging.getLogger(__name__)
 
 _token: Optional[str] = None
 _guild_ids: Optional[List[int]] = None
+_metrics_port: Optional[int] = None
 
 
 def _load() -> None:
-    global _token, _guild_ids
+    global _token, _guild_ids, _metrics_port
 
     if _token is not None:
         return
@@ -28,6 +29,7 @@ def _load() -> None:
 
         _token = config['token']
         _guild_ids = config.get('guild_ids')
+        _metrics_port = config.get('metrics_port')
         LOG.info('Loaded config from config.json')
 
     else:
@@ -37,6 +39,7 @@ def _load() -> None:
 
 
 def token() -> str:
+    """Token to connect to Discord with."""
     _load()
     if _token is None:
         raise ValueError("Config could not be loaded")
@@ -44,5 +47,12 @@ def token() -> str:
 
 
 def guild_ids() -> Optional[List[int]]:
+    """Restricted guild ids this bot registers commands under."""
     _load()
     return _guild_ids
+
+
+def metrics_port() -> Optional[int]:
+    """Port to expose metrics on."""
+    _load()
+    return _metrics_port

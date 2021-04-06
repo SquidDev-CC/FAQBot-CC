@@ -8,9 +8,10 @@ import discord.ext.commands as commands
 from discord_slash import SlashCommand, SlashContext
 import discord_slash.utils.manage_commands as manage_commands
 
-from ccfaq.commands import Sendable, SendableContext
+from ccfaq.commands import Sendable, SendableContext, COMMAND_TIME
 from ccfaq.config import guild_ids
 from ccfaq.faq_list import FAQ
+from ccfaq.utils import with_async_timer
 
 
 LOG = logging.getLogger(__name__)
@@ -44,6 +45,7 @@ class FAQCog(commands.Cog):
         self.faqs = faqs
 
     @commands.command(name='faq', aliases=['f', 'info', 'i'])
+    @with_async_timer(COMMAND_TIME.labels('faq', 'message'))
     async def faq(self, ctx: commands.Context, *, search):
         """Retrieves FAQs related to given keyword(s)."""
         await _search(SendableContext(ctx), self.faqs, search)
@@ -64,6 +66,7 @@ def _add_slash(slash: SlashCommand, faq: FAQ) -> None:
         description=faq.title,
         guild_ids=guild_ids(),
     )
+    @with_async_timer(COMMAND_TIME.labels('faq', 'slash'))
     async def _run(ctx: SlashContext) -> None:
         await ctx.send(embeds=[_embed(faq)])
 
@@ -94,5 +97,7 @@ def add_faq_slashcommands(slash: SlashCommand, faqs: List[FAQ]) -> None:
             ],
             guild_ids=guild_ids(),
         )
+        @with_async_timer(COMMAND_TIME.labels('faq', 'slash'))
         async def _run(ctx: SlashContext, search: str) -> None:
+            LOG.info(f'event=faq search="{faq.name}"')
             await _search(ctx, faqs, search)

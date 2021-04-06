@@ -1,9 +1,7 @@
 ---
-title: ComputerCraft MultiPlayer Servers
+title: ComputerCraft Multiplayer Servers
 search: multiplayer servers
 ---
-**Multiplayer Servers focused mainly at ComputerCraft**
-
 There currently exist a few fairly well-known servers that adopt ComputerCraft as their main feature.
 While a lot of popular modpacks include CC, they may not prioritise it and therefore include less support for it.
 

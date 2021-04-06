@@ -3,7 +3,10 @@ Discord bot for private use only.
 Created by Wendelstein7
 """
 
+import asyncio
 import logging
+
+import prometheus_client
 
 import discord
 from discord.ext.commands import Bot
@@ -39,7 +42,7 @@ async def on_command(ctx):
     LOG.info('Fired %s by %s', ctx.command, ctx.author)
 
 
-def run() -> None:
+async def _setup() -> None:
     faqs = ccfaq.faq_list.load()
     LOG.info('Successfully loaded %d FAQs!', len(faqs))
 
@@ -51,5 +54,13 @@ def run() -> None:
 
     add_faq_slashcommands(slash, faqs)
 
+def run() -> None:
     LOG.info("Starting discord Bot")
+
+    metrics_port = ccfaq.config.metrics_port()
+    if metrics_port is not None:
+        LOG.info(f"Hosting metrics on {metrics_port}")
+        prometheus_client.start_http_server(metrics_port)
+
+    asyncio.get_event_loop().run_until_complete(_setup())
     bot.run(ccfaq.config.token())

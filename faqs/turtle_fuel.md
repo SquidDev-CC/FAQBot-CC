@@ -1,9 +1,7 @@
 ---
-title: Turtle fuel
+title: The principles of fueling ComputerCraft Turtles
 search: turtle refueling getFuelLevel
 ---
-**The principles of fueling ComputerCraft Turtles**
-
 By default, ComputerCraft Turtles need fuel to move, *but not to rotate*.
 Without fuel, actions like `turtle.forward()` will not execute and return `false`.
 Moving will consume 1 fuel unit per block moved.

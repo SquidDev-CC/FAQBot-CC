@@ -4,6 +4,8 @@ Commands provided by the ccfaq bot.
 
 from typing import Protocol, List, Optional
 
+from prometheus_client import Summary
+
 import discord
 import discord.ext.commands as commands
 
@@ -33,3 +35,6 @@ class SendableContext:
             await self.context.send(content=content)
             for embed in embeds:
                 await self.context.send(embed=embed)
+
+
+COMMAND_TIME = Summary("faqcc_command_time", "Time taken to execute a command", ["command", "mode"])

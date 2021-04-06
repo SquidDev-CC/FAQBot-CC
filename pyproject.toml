@@ -10,9 +10,9 @@ repository = "https://github.com/SquidDev-CC/FAQBot-CC"
 [tool.poetry.dependencies]
 python = "^3.8"
 "discord.py" = "^1.6.0"
-discord-py-slash-command = "^1.0.8"
+discord-py-slash-command = "^1.1.0"
 pyyaml = "^5.4.1"
-systemd-python = "^234"
+prometheus-client = "^0.10.0"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.6.0"
