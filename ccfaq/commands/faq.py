@@ -11,7 +11,7 @@ import discord_slash.utils.manage_commands as manage_commands
 from ccfaq.commands import Sendable, SendableContext, COMMAND_TIME
 from ccfaq.config import guild_ids
 from ccfaq.faq_list import FAQ
-from ccfaq.utils import with_async_timer
+from ccfaq.timing import with_async_timer
 
 
 LOG = logging.getLogger(__name__)
@@ -68,6 +68,7 @@ def _add_slash(slash: SlashCommand, faq: FAQ) -> None:
     )
     @with_async_timer(COMMAND_TIME.labels('faq', 'slash'))
     async def _run(ctx: SlashContext) -> None:
+        LOG.info(f'event=faq search="{faq.name}"')
         await ctx.send(embeds=[_embed(faq)])
 
 
@@ -99,5 +100,4 @@ def add_faq_slashcommands(slash: SlashCommand, faqs: List[FAQ]) -> None:
         )
         @with_async_timer(COMMAND_TIME.labels('faq', 'slash'))
         async def _run(ctx: SlashContext, search: str) -> None:
-            LOG.info(f'event=faq search="{faq.name}"')
             await _search(ctx, faqs, search)

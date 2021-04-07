@@ -11,7 +11,7 @@ import logging
 
 from prometheus_client import Summary
 
-from .utils import with_async_timer
+from .timing import with_async_timer
 
 
 LOG = logging.getLogger("cached_request")

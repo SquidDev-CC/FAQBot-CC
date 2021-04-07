@@ -15,7 +15,7 @@ import discord_slash.utils.manage_commands as manage_commands
 from ccfaq.cached_request import CachedRequest
 from ccfaq.commands import Sendable, SendableContext, COMMAND_TIME
 from ccfaq.config import guild_ids
-from ccfaq.utils import with_async_timer
+from ccfaq.timing import with_async_timer
 
 
 LOG = logging.getLogger(__name__)
