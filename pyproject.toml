@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "faqbot-cc"
+name = "ccfaq"
 version = "0.1.0"
 description = "A Discord bot for answering frequently asked questions regarding CC."
 authors = ["Wendelstein7 <23213464+Wendelstein7@users.noreply.github.com>"]
