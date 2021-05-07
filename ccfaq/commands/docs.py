@@ -15,6 +15,7 @@ import discord_slash.utils.manage_commands as manage_commands
 from ccfaq.cached_request import CachedRequest
 from ccfaq.commands import Sendable, SendableContext, COMMAND_TIME
 from ccfaq.config import guild_ids
+from ccfaq.lua_names import NAMES as lua_names
 from ccfaq.timing import with_async_timer
 
 
@@ -83,6 +84,12 @@ class DocsCog(commands.Cog):
                 content=f"Cannot find '{search}', using '{method['original_name']}'' instead.",
                 embeds=[_embed(method, link)],
             )
+            return
+
+        if search_k in lua_names:
+            LOG.info(f'event=search.lua search="{search}"')
+            link = lua_names[search_k]
+            await ctx.send(embeds=[discord.Embed(title=search_k, url=link)])
             return
 
         LOG.warning(f'event=search.missing search="{search}"')
