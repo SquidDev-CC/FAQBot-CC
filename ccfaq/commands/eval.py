@@ -88,6 +88,11 @@ class EvalCog(commands.Cog):
                 await ctx.message.reply(":bangbang: Error reading attachment.", mention_author=False)
                 return
 
+        if len(code) > 128 * 1024:
+            # 128K is the same length as we use on nginx.
+            await ctx.message.reply(":bangbang: Code block is too long to be run. Sorry!", mention_author=False)
+            return
+
         LOG.info("Running %s", json.dumps(code))
 
         clean_exit = True
