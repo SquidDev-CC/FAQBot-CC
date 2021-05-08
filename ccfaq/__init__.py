@@ -16,6 +16,7 @@ import ccfaq.faq_list
 import ccfaq.config
 from ccfaq.commands.about import AboutCog
 from ccfaq.commands.docs import DocsCog
+from ccfaq.commands.eval import EvalCog
 from ccfaq.commands.faq import FAQCog, add_faq_slashcommands
 
 LOG = logging.getLogger(__name__)
@@ -50,6 +51,7 @@ async def _setup() -> None:
 
     bot.add_cog(AboutCog(bot, faqs))
     bot.add_cog(DocsCog())
+    bot.add_cog(EvalCog())
     bot.add_cog(FAQCog(faqs))
 
     add_faq_slashcommands(slash, faqs)

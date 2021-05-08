@@ -15,10 +15,11 @@ LOG = logging.getLogger(__name__)
 _token: Optional[str] = None
 _guild_ids: Optional[List[int]] = None
 _metrics_port: Optional[int] = None
+_eval_server: str = "https://eval.tweaked.cc"
 
 
 def _load() -> None:
-    global _token, _guild_ids, _metrics_port
+    global _token, _guild_ids, _metrics_port, _eval_server
 
     if _token is not None:
         return
@@ -30,6 +31,7 @@ def _load() -> None:
         _token = config['token']
         _guild_ids = config.get('guild_ids')
         _metrics_port = config.get('metrics_port')
+        _eval_server = config.get('eval_server', _eval_server)
         LOG.info('Loaded config from config.json')
 
     else:
@@ -56,3 +58,9 @@ def metrics_port() -> Optional[int]:
     """Port to expose metrics on."""
     _load()
     return _metrics_port
+
+
+def eval_server() -> str:
+    """The server to use for evaling code."""
+    _load()
+    return _eval_server
