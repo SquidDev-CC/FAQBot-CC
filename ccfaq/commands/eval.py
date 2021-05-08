@@ -59,11 +59,9 @@ class EvalCog(commands.Cog):
                 LOG.exception("Cannot find message we're replying to.")
             else:
                 code_blocks = self._get_code_blocks(reply_to)
-                if code_blocks:
-                    message = reply_to
 
         if not code_blocks:
-            await message.reply(":bangbang: No code found in message!", mention_author=False)
+            await ctx.message.reply(":bangbang: No code found in message!", mention_author=False)
             return
 
         warnings = []
