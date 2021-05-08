@@ -73,13 +73,15 @@ class EvalCog(commands.Cog):
             warnings.append(":warning: Multiple code blocks, choosing the first.")
             code = code_blocks[0]
 
-        LOG.info("Running: %s", json.dumps(code))
+        LOG.info("Running %s", json.dumps(code))
 
+        clean_exit = True
         try:
             response : aiohttp.ClientResponse
             async with self.session.post(eval_server(), data=code, timeout=aiohttp.ClientTimeout(total=20)) as response:
                 if response.status == 200:
                     if response.headers.get("X-Clean-Exit") != "True":
+                        clean_exit = False
                         warnings.append(":warning: Computer ran for too long.")
 
                     image = await response.read()
@@ -89,6 +91,8 @@ class EvalCog(commands.Cog):
             LOG.exception("Error contacting eval.tweaked.cc")
             await ctx.reply(":bangbang: Unknown error when running code", mention_author=False)
             return
+
+        LOG.info(f'event=eval has_image={image is not None} clean_exit={clean_exit}')
 
         if not image:
             await ctx.reply(":bangbang: No screnshot returned. Sorry!", mention_author=False)
