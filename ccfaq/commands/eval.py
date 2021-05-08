@@ -6,7 +6,7 @@ import io
 import json
 import logging
 import re
-from typing import Optional, List, Tuple
+from typing import Optional, List, Union
 
 import discord
 import discord.ext.commands as commands
@@ -29,11 +29,18 @@ class EvalCog(commands.Cog):
     def __init__(self):
         self.session = aiohttp.ClientSession()
 
-    def _get_code_blocks(self, message: discord.Message) -> List[str]:
+    def _get_code_blocks(self, message: discord.Message) -> List[Union[str, discord.Attachment]]:
         contents = message.content
-        code_blocks = [
-            group[0] or group[2] for group in CODE_BLOCKS.findall(contents)
-        ]
+
+        code_blocks = []
+        for attachment in message.attachments:
+            if "text/plain" in attachment.content_type:
+                # We could check file extension, but instead just rely on the fact that people won't do %eval on other
+                # files.
+                code_blocks.append(attachment)
+
+        for code_block, _, inline_code in CODE_BLOCKS.findall(contents):
+            code_blocks.append(code_block or inline_code)
 
         if code_blocks:
             return code_blocks
@@ -70,6 +77,16 @@ class EvalCog(commands.Cog):
         else:
             warnings.append(":warning: Multiple code blocks, choosing the first.")
             code = code_blocks[0]
+
+        if isinstance(code, discord.Attachment):
+            attachment: discord.Attachment = code
+
+            try:
+                code = (await attachment.read()).decode()
+            except:
+                LOG.exception("Error downloading attachment %s (%s)", attachment.filename, attachment.url)
+                await ctx.message.reply(":bangbang: Error reading attachment.", mention_author=False)
+                return
 
         LOG.info("Running %s", json.dumps(code))
 
