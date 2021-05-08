@@ -48,15 +48,6 @@ class AboutCog(commands.Cog):
             inline=True
         )
         embed.add_field(
-            name=":new: **Version information**",
-            value="Bot version: `{}`\nDiscord.py version: `{}`\nPython version: `{}`".format(
-                date.fromtimestamp(os.path.getmtime('bot.py')),
-                discord.__version__,
-                sys.version.split(' ')[0]
-            ),
-            inline=True
-        )
-        embed.add_field(
             name=":up: **Uptime information**",
             value="Bot started: `{}`\nBot uptime: `{}`".format(
                 self.start_time.strftime("%Y-%m-%d %H:%M:%S UTC"),
