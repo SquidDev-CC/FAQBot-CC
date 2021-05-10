@@ -115,7 +115,7 @@ class EvalCog(commands.Cog):
         LOG.info(f'event=eval has_image={image is not None} clean_exit={clean_exit}')
 
         if not image:
-            await ctx.reply(":bangbang: No screnshot returned. Sorry!", mention_author=False)
+            await ctx.reply(":bangbang: No screenshot returned. Sorry!", mention_author=False)
         else:
             await ctx.reply(
                 "\n".join(warnings),
