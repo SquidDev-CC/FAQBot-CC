@@ -141,6 +141,8 @@ for name in (
     "bit32.replace",
     "bit32.rrotate",
     "bit32.rshift",
+    "table.pack",
+    "table.unpack",
 ):
     NAMES[name] = _lua52 + "pdf-" + name
 
