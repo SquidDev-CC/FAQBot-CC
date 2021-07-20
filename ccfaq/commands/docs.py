@@ -95,7 +95,7 @@ class DocsCog(commands.Cog):
         LOG.warning(f'event=search.missing search="{search}"')
         await ctx.send(content=f"Cannot find method '{search}'. Please check your spelling, or contribute to the documentation at https://github.com/SquidDev-CC/CC-Tweaked.")
 
-    @commands.command(name="doc", aliases=["d", "docs"])
+    @commands.command(name="doc", aliases=["d", "docs", "rtfm"])
     @with_async_timer(COMMAND_TIME.labels('doc', 'message'))
     async def doc(self, ctx: commands.Context, *, search: str) -> None:
         """Searches for a function with the current name and returns its documentation."""
