@@ -41,8 +41,14 @@ async def on_message(message: discord.Message) -> None:
 @bot.event
 async def on_command(ctx):
     LOG.info('Fired %s by %s', ctx.command, ctx.author)
-
-
+    
+@bot.event
+async def on_raw_reaction_add(payload):
+    # This is really dirty, and there is probably a better method to do this.
+    message = await bot.fetch_channel(payload.channel_id).fetch_message(payload.message_id)
+    if message.author == bot.user and str(payload.emoji) == "\U0001f5d1\U0000fe0f": #If the message author is ourself, and the emoji is :wastebasket: then
+        await message.delete() # Await deletion of the message. This should not require extra permissions, as it is an own message.
+        
 async def _setup() -> None:
     faqs = ccfaq.faq_list.load()
     LOG.info('Successfully loaded %d FAQs!', len(faqs))
