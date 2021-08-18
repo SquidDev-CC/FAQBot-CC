@@ -43,11 +43,14 @@ async def on_command(ctx):
     LOG.info('Fired %s by %s', ctx.command, ctx.author)
     
 @bot.event
-async def on_raw_reaction_add(payload):
-    # This is really dirty, and there is probably a better method to do this.
-    message = await bot.fetch_channel(payload.channel_id).fetch_message(payload.message_id)
-    if message.author == bot.user and str(payload.emoji) == "\U0001f5d1\U0000fe0f": #If the message author is ourself, and the emoji is :wastebasket: then
-        await message.delete() # Await deletion of the message. This should not require extra permissions, as it is an own message.
+async def on_reaction_add(reaction,user):
+    # Check if it's the :wastebasket: emoji
+    if str(reaction.emoji) == "\U0001f5d1\U0000fe0f":
+        # Now check if it's a reply message
+        if reaction.message.reference and message.reference.resolved:
+            # Alright, now check if this message is sent from ourselves, and if the person reacting is the sender of the original message
+            if reaction.message.author == bot.user and reaction.message.reference.resolved.author == user:
+                await message.delete() # Await deletion of the message. This should not require extra permissions, as it is an own message.
         
 async def _setup() -> None:
     faqs = ccfaq.faq_list.load()
