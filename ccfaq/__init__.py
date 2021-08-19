@@ -41,17 +41,26 @@ async def on_message(message: discord.Message) -> None:
 @bot.event
 async def on_command(ctx):
     LOG.info('Fired %s by %s', ctx.command, ctx.author)
-    
+
+
 @bot.event
-async def on_reaction_add(reaction,user):
-    # Check if it's the :wastebasket: emoji
-    if str(reaction.emoji) == "\U0001f5d1\U0000fe0f":
-        # Now check if it's a reply message
-        if reaction.message.reference and message.reference.resolved:
-            # Alright, now check if this message is sent from ourselves, and if the person reacting is the sender of the original message
-            if reaction.message.author == bot.user and reaction.message.reference.resolved.author == user:
-                await message.delete() # Await deletion of the message. This should not require extra permissions, as it is an own message.
-        
+async def on_reaction_add(reaction: discord.Reaction, user: discord.User):
+    """
+    Delete a message when the original user reacts with the :wastebasket: emoji.
+    """
+    if str(reaction.emoji) != "\U0001f5d1\U0000fe0f":
+        return
+
+    # Now check if it's a reply message
+    message = reaction.message
+    if (
+        message.author == bot.user and message.reference and
+        isinstance(message.reference.resolved, discord.Message) and
+        message.reference.resolved.author == user
+    ):
+        await message.delete()
+
+
 async def _setup() -> None:
     faqs = ccfaq.faq_list.load()
     LOG.info('Successfully loaded %d FAQs!', len(faqs))
