@@ -117,11 +117,13 @@ class EvalCog(commands.Cog):
         if not image:
             await ctx.reply(":bangbang: No screenshot returned. Sorry!", mention_author=False)
         else:
-            await ctx.reply(
+            message = await ctx.reply(
                 "\n".join(warnings),
                 mention_author=False,
                 file=discord.File(io.BytesIO(image), 'image.png')
             )
+            # Add the :wastebasket: reaction to these messages.
+            message.add_reaction("\U0001f5d1\U0000fe0f")
 
 
     def cog_unload(self) -> None:
