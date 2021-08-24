@@ -32,7 +32,7 @@ class EvalCog(commands.Cog):
     def _get_code_blocks(self, message: discord.Message) -> List[Union[str, discord.Attachment]]:
         contents = message.content
 
-        code_blocks = []
+        code_blocks: List[Union[str, discord.Attachment]] = []
         for attachment in message.attachments:
             if "text/plain" in attachment.content_type:
                 # We could check file extension, but instead just rely on the fact that people won't do %eval on other

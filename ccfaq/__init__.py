@@ -43,24 +43,6 @@ async def on_command(ctx):
     LOG.info('Fired %s by %s', ctx.command, ctx.author)
 
 
-@bot.event
-async def on_reaction_add(reaction: discord.Reaction, user: discord.User):
-    """
-    Delete a message when the original user reacts with the :wastebasket: emoji.
-    """
-    if str(reaction.emoji) != "\U0001f5d1\U0000fe0f":
-        return
-
-    # Now check if it's a reply message
-    message = reaction.message
-    if (
-        message.author == bot.user and message.reference and
-        isinstance(message.reference.resolved, discord.Message) and
-        message.reference.resolved.author == user
-    ):
-        await message.delete()
-
-
 async def _setup() -> None:
     faqs = ccfaq.faq_list.load()
     LOG.info('Successfully loaded %d FAQs!', len(faqs))

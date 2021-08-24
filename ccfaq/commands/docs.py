@@ -88,8 +88,8 @@ class DocsCog(commands.Cog):
 
         if search_k in lua_names:
             LOG.info(f'event=search.lua search="{search}"')
-            link = lua_names[search_k]
-            await ctx.send(embeds=[discord.Embed(title=search_k, url=link)])
+            url = lua_names[search_k]
+            await ctx.send(embeds=[discord.Embed(title=search_k, url=url)])
             return
 
         LOG.warning(f'event=search.missing search="{search}"')

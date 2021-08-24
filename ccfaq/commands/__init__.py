@@ -12,7 +12,7 @@ import discord.ext.commands as commands
 
 class Sendable(Protocol):
     """A sink of messages."""
-    async def send(self, *, content: str = "", embeds: Optional[List[discord.Embed]] = None) -> None:
+    async def send(self, *, content: str = "", embeds: Optional[List[discord.Embed]] = None) -> object:
         """Send a message with some optional content and optional embeds."""
         ...
 
