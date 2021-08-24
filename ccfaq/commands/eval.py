@@ -6,17 +6,23 @@ import io
 import json
 import logging
 import re
-from typing import Optional, List, Union
+from typing import List, Optional, Union
+from attr import dataclass
 
 import discord
+from discord.message import Message
+from discord_slash.context import ComponentContext
+from discord_slash.model import ButtonStyle
 import discord.ext.commands as commands
-from discord_slash.cog_ext import cog_slash
-from discord_slash import SlashContext, SlashCommand
-import discord_slash.utils.manage_commands as manage_commands
+from discord_slash.cog_ext import cog_component
+from discord_slash.utils.manage_components import create_button, create_actionrow
 
 from ccfaq.commands import COMMAND_TIME
-from ccfaq.config import guild_ids, eval_server
+from ccfaq.config import eval_server
 from ccfaq.timing import with_async_timer
+
+
+__all__ = ('EvalCog', )
 
 LOG = logging.getLogger(__name__)
 
@@ -24,17 +30,45 @@ CODE_BLOCKS = re.compile(r'```(?:lua)?\n(.*?)```|(`+)(.*?)\2', flags=re.DOTALL |
 
 DROP_COMMAND = re.compile(r'^%([a-z]+)')
 
+
+async def message_reference(message: Message) -> Optional[Message]:
+    if message.reference is None:
+        return None
+
+    if message.reference.cached_message is not None:
+        return message.reference.cached_message
+
+    if resolved := message.reference.resolved is not None:
+        return resolved if isinstance(resolved, Message) else None
+
+    msg_id = message.reference.message_id
+    if msg_id is None:
+        return None
+
+    try:
+        return await message.channel.fetch_message(msg_id)
+    except:
+        LOG.exception("Cannot resolve message")
+        return None
+
+
+@dataclass
+class Result:
+    message: str
+    attachment: Optional[discord.File] = None
+
+
 class EvalCog(commands.Cog):
 
     def __init__(self):
         self.session = aiohttp.ClientSession()
 
-    def _get_code_blocks(self, message: discord.Message) -> List[Union[str, discord.Attachment]]:
+    def _get_code_blocks(self, message: Message) -> List[Union[str, discord.Attachment]]:
         contents = message.content
 
         code_blocks: List[Union[str, discord.Attachment]] = []
         for attachment in message.attachments:
-            if "text/plain" in attachment.content_type:
+            if attachment.content_type is not None and "text/plain" in attachment.content_type:
                 # We could check file extension, but instead just rely on the fact that people won't do %eval on other
                 # files.
                 code_blocks.append(attachment)
@@ -46,30 +80,26 @@ class EvalCog(commands.Cog):
             return code_blocks
 
         contents = DROP_COMMAND.sub('', contents).strip()
-        print(contents)
         if contents:
             return [contents]
 
         return []
 
-    @commands.command(name="eval", aliases=["exec", "code"])
-    @with_async_timer(COMMAND_TIME.labels('eval', 'message'))
-    async def eval(self, ctx: commands.Context) -> None:
+    async def _eval(self, message: Message) -> Result:
         """Execute some code."""
 
-        code_blocks = self._get_code_blocks(ctx.message)
+        code_blocks = self._get_code_blocks(message)
 
-        if not code_blocks and ctx.message.reference:
-            try:
-                reply_to = await ctx.fetch_message(ctx.message.reference.message_id)
-            except:
-                LOG.exception("Cannot find message we're replying to.")
-            else:
-                code_blocks = self._get_code_blocks(reply_to)
+        if not code_blocks and message.reference:
+
+            reply_to = await message_reference(message)
+            if reply_to is None:
+                return Result(":bangbang: No code found in message!")
+
+            code_blocks = self._get_code_blocks(reply_to)
 
         if not code_blocks:
-            await ctx.message.reply(":bangbang: No code found in message!", mention_author=False)
-            return
+            return Result(":bangbang: No code found in message!")
 
         warnings = []
         if len(code_blocks) == 1:
@@ -85,13 +115,11 @@ class EvalCog(commands.Cog):
                 code = (await attachment.read()).decode()
             except:
                 LOG.exception("Error downloading attachment %s (%s)", attachment.filename, attachment.url)
-                await ctx.message.reply(":bangbang: Error reading attachment.", mention_author=False)
-                return
+                return Result(":bangbang: Error reading attachment.")
 
         if len(code) > 128 * 1024:
             # 128K is the same length as we use on nginx.
-            await ctx.message.reply(":bangbang: Code block is too long to be run. Sorry!", mention_author=False)
-            return
+            return Result(":bangbang: Code block is too long to be run. Sorry!")
 
         LOG.info("Running %s", json.dumps(code))
 
@@ -109,19 +137,75 @@ class EvalCog(commands.Cog):
                     image = None
         except:
             LOG.exception("Error contacting eval.tweaked.cc")
-            await ctx.reply(":bangbang: Unknown error when running code", mention_author=False)
-            return
+            return Result(":bangbang: Unknown error when running code")
 
         LOG.info(f'event=eval has_image={image is not None} clean_exit={clean_exit}')
 
         if not image:
-            await ctx.reply(":bangbang: No screenshot returned. Sorry!", mention_author=False)
+            return Result(":bangbang: No screenshot returned. Sorry!")
+        else:
+            return Result(
+                message="\n".join(warnings),
+                attachment=discord.File(io.BytesIO(image), 'image.png'),
+            )
+
+    @commands.command(name="eval", aliases=["exec", "code"])
+    @with_async_timer(COMMAND_TIME.labels('eval', 'message'))
+    async def eval(self, ctx: commands.Context) -> None:
+        result = await self._eval(ctx.message)
+        if result.attachment is None:
+            await ctx.reply(result.message, mention_author=False)
         else:
             await ctx.reply(
-                "\n".join(warnings),
+                result.message,
                 mention_author=False,
-                file=discord.File(io.BytesIO(image), 'image.png')
+                file=result.attachment,
+                components=[create_actionrow(  # type: ignore
+                    create_button(style=ButtonStyle.primary, label="Rerun", custom_id="on_rerun"),
+                    create_button(emoji="🗑", style=ButtonStyle.danger, label="Delete", custom_id="on_delete"),
+                )]
             )
+
+    async def _resolve_origin(self, ctx: ComponentContext) -> Optional[Message]:
+        original = None if ctx.origin_message is None else await message_reference(ctx.origin_message)
+        if original is None:
+            await ctx.reply("I can't remember anything about this message :/.", hidden=True)
+            return None
+        elif original.author != ctx.author:
+            await ctx.send("Only the original commenter can do this. Sorry!", hidden=True)
+            return None
+        else:
+            return original
+
+    @cog_component()
+    @with_async_timer(COMMAND_TIME.labels('eval', 'rerun'))
+    async def on_rerun(self, ctx: ComponentContext) -> None:
+        if (message := await self._resolve_origin(ctx)) is None:
+            return
+
+        await ctx.defer(edit_origin=True)
+
+        result = await self._eval(message)
+        if result.attachment is None:
+            await ctx.reply(result.message, hidden=True)
+        else:
+            # It'd be better to do edit_origin, but that doesn't accept attachments.
+            resp = {
+                'content': result.message,
+                'attachments': [],
+                'allowed_mentions': {},
+            }
+            await ctx._http.edit(resp, ctx._token, files=[result.attachment])
+            ctx.deferred = False
+            ctx.responded = True
+
+    @cog_component()
+    @with_async_timer(COMMAND_TIME.labels('eval', 'delete'))
+    async def on_delete(self, ctx: ComponentContext) -> None:
+        if await self._resolve_origin(ctx):
+            assert ctx.origin_message is not None
+            await ctx.origin_message.delete()
+            await ctx.defer(ignore=True)
 
 
     def cog_unload(self) -> None:
