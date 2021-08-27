@@ -5,6 +5,7 @@ Commands provided by the ccfaq bot.
 from __future__ import annotations
 
 import functools
+import logging
 from typing import Any, Coroutine, Protocol, List, Optional, Callable, TypeVar, Awaitable, Union, cast
 from typing_extensions import ParamSpec, Concatenate, TypeAlias
 
@@ -21,6 +22,7 @@ import discord.ext.commands as commands
 __all__ = ('Sendable', 'SendableContext', 'track_command')
 
 
+log = logging.getLogger(__name__)
 tracer = opentelemetry.trace.get_tracer(__name__)
 
 class Sendable(Protocol):
@@ -82,6 +84,8 @@ def track_command(command: str, mode: str) -> Callable[[Handler[C, P, R]], Handl
                         span.set_attribute("discord.guild", guild.name)
 
                     try:
+                        log.info("Running %s (started by %s)", op_name, author.display_name)
+
                         return await func(context, *args, **kwargs)
                     except Exception as e:
                         span.set_status(Status(StatusCode.ERROR, str(e)))
