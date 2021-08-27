@@ -6,6 +6,9 @@ import sys
 from typing import Any, Dict
 import warnings
 
+from .telemetry import TraceFilter
+
+
 BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE = range(8)
 
 COLOURS = {
@@ -38,20 +41,17 @@ class ColourFormatter(logging.Formatter):
         return msg
 
 
-FORMAT = "[%(asctime)s] [%(levelname)s/%(name)s] %(message)s"
+FORMAT = "[%(asctime)s] level=%(levelname)s logger=%(name)s trace_id=%(trace_id)s span_id=%(span_id)s %(message)s"
 
 
 def configure() -> None:
-    """Configure the root logger. This should be called once when the program is
-       initialised.
-
+    """
+    Configure the root logger. This should be called once when the program is
+    initialised.
     """
     # Be more aggressive in capturing warnings
     logging.captureWarnings(True)
     warnings.simplefilter('default')
-
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
 
     # Register a custom formatter, which prints things coloured with the time, level and coponent
     # name.
@@ -63,7 +63,8 @@ def configure() -> None:
     formatter.default_msec_format = "%s.%03d"
 
     str_handler = logging.StreamHandler()
+    str_handler.addFilter(TraceFilter())
     str_handler.setFormatter(formatter)
     str_handler.setLevel(logging.INFO)
 
-    logger.addHandler(str_handler)
+    logging.basicConfig(level=logging.DEBUG, handlers=[str_handler])

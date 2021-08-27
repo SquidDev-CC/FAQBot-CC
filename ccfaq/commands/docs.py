@@ -9,14 +9,13 @@ import json
 import discord
 import discord.ext.commands as commands
 from discord_slash.cog_ext import cog_slash
-from discord_slash import SlashContext, SlashCommand
+from discord_slash import SlashContext
 import discord_slash.utils.manage_commands as manage_commands
 
 from ccfaq.cached_request import CachedRequest
-from ccfaq.commands import Sendable, SendableContext, COMMAND_TIME
+from ccfaq.commands import Sendable, SendableContext, track_command
 from ccfaq.config import guild_ids
 from ccfaq.lua_names import NAMES as lua_names
-from ccfaq.timing import with_async_timer
 
 
 LOG = logging.getLogger(__name__)
@@ -96,13 +95,13 @@ class DocsCog(commands.Cog):
         await ctx.send(content=f"Cannot find method '{search}'. Please check your spelling, or contribute to the documentation at https://github.com/SquidDev-CC/CC-Tweaked.")
 
     @commands.command(name="doc", aliases=["d", "docs"])
-    @with_async_timer(COMMAND_TIME.labels('doc', 'message'))
+    @track_command('doc', 'message')
     async def doc(self, ctx: commands.Context, *, search: str) -> None:
         """Searches for a function with the current name and returns its documentation."""
         await self._search_docs(SendableContext(ctx), search, lambda x: f"https://tweaked.cc/{x['url']}")
 
     @commands.command(name="source", aliases=["s"])
-    @with_async_timer(COMMAND_TIME.labels('source', 'message'))
+    @track_command('source', 'message')
     async def source(self, ctx: commands.Context, *, search: str) -> None:
         """Searches for a function with the current name, and returns a link to its source code."""
         await self._search_docs(SendableContext(ctx), search, lambda x: x["source"])
@@ -129,7 +128,7 @@ class DocsCog(commands.Cog):
         ],
         guild_ids=guild_ids(),
     )
-    @with_async_timer(COMMAND_TIME.labels('doc', 'slash'))
+    @track_command('doc', 'slash')
     async def doc_slash(self, ctx: SlashContext, name: str) -> None:
         await self._search_docs(ctx, name, lambda x: f"https://tweaked.cc/{x['url']}")
 
@@ -145,7 +144,7 @@ class DocsCog(commands.Cog):
         ],
         guild_ids=guild_ids(),
     )
-    @with_async_timer(COMMAND_TIME.labels('source', 'slash'))
+    @track_command('source', 'slash')
     async def doc_source(self, ctx: SlashContext, name: str) -> None:
         await self._search_docs(ctx, name, lambda x: x["source"])
 

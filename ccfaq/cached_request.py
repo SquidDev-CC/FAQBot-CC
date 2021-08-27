@@ -11,7 +11,7 @@ import logging
 
 from prometheus_client import Summary
 
-from .timing import with_async_timer
+from .telemetry import with_async_timer
 
 
 LOG = logging.getLogger("cached_request")
@@ -79,7 +79,6 @@ class CachedRequest(CachedResource[T]):
         if self._etag is not None:
             headers["If-None-Match"] = self._etag
 
-        start = monotonic()
         try:
             async with self._session.get(self.url, headers=headers) as response:
                 if response.status == 304:

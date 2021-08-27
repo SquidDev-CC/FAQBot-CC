@@ -17,9 +17,8 @@ import discord.ext.commands as commands
 from discord_slash.cog_ext import cog_component
 from discord_slash.utils.manage_components import create_button, create_actionrow
 
-from ccfaq.commands import COMMAND_TIME
+from ccfaq.commands import track_command
 from ccfaq.config import eval_server
-from ccfaq.timing import with_async_timer
 
 
 __all__ = ('EvalCog', )
@@ -150,7 +149,7 @@ class EvalCog(commands.Cog):
             )
 
     @commands.command(name="eval", aliases=["exec", "code"])
-    @with_async_timer(COMMAND_TIME.labels('eval', 'message'))
+    @track_command('eval', 'message')
     async def eval(self, ctx: commands.Context) -> None:
         result = await self._eval(ctx.message)
         if result.attachment is None:
@@ -178,7 +177,7 @@ class EvalCog(commands.Cog):
             return original
 
     @cog_component()
-    @with_async_timer(COMMAND_TIME.labels('eval', 'rerun'))
+    @track_command('eval', 'rerun')
     async def on_rerun(self, ctx: ComponentContext) -> None:
         if (message := await self._resolve_origin(ctx)) is None:
             return
@@ -200,7 +199,7 @@ class EvalCog(commands.Cog):
             ctx.responded = True
 
     @cog_component()
-    @with_async_timer(COMMAND_TIME.labels('eval', 'delete'))
+    @track_command('eval', 'delete')
     async def on_delete(self, ctx: ComponentContext) -> None:
         if await self._resolve_origin(ctx):
             assert ctx.origin_message is not None

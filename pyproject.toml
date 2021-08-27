@@ -14,6 +14,11 @@ discord-py-slash-command = "^3.0.1"
 pyyaml = "^5.4.1"
 prometheus-client = "^0.10.0"
 "discord.py-stubs" = "^1.7.3"
+opentelemetry-api = "^1.5.0"
+opentelemetry-sdk = "^1.5.0"
+opentelemetry-instrumentation-aiohttp-client = "^0.24b0"
+opentelemetry-exporter-otlp = "^1.5.0"
+opentelemetry-propagator-jaeger = "^1.5.0"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.6.0"
