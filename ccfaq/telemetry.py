@@ -2,11 +2,12 @@ import logging
 import logging
 from timeit import default_timer
 import functools
+from typing import cast
 
 import aiohttp
 import wrapt
 from prometheus_client import Summary # Ideally we'd use opentelemetry here, but I can't find the prom exporter.
-from opentelemetry.trace import set_tracer_provider, get_current_span, format_span_id, format_trace_id
+from opentelemetry.trace import get_tracer_provider, set_tracer_provider, get_current_span, format_span_id, format_trace_id
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
@@ -98,3 +99,7 @@ def configure():
 
     _aiohttp_add_timings()
     AioHttpClientInstrumentor().instrument()
+
+
+def cleanup():
+    cast(TracerProvider, get_tracer_provider()).shutdown()
