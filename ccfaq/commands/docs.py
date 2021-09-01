@@ -14,7 +14,6 @@ import discord_slash.utils.manage_commands as manage_commands
 
 from ccfaq.cached_request import CachedRequest
 from ccfaq.commands import Sendable, SendableContext, track_command
-from ccfaq.config import guild_ids
 from ccfaq.lua_names import NAMES as lua_names
 
 
@@ -126,7 +125,6 @@ class DocsCog(commands.Cog):
                 required=True,
             ),
         ],
-        guild_ids=guild_ids(),
     )
     @track_command('doc', 'slash')
     async def doc_slash(self, ctx: SlashContext, name: str) -> None:
@@ -142,7 +140,6 @@ class DocsCog(commands.Cog):
                 required=True,
             ),
         ],
-        guild_ids=guild_ids(),
     )
     @track_command('source', 'slash')
     async def doc_source(self, ctx: SlashContext, name: str) -> None:

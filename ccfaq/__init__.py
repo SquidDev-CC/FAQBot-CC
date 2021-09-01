@@ -47,7 +47,12 @@ async def _setup() -> None:
     faqs = ccfaq.faq_list.load()
     LOG.info('Successfully loaded %d FAQs!', len(faqs))
 
-    slash = SlashCommand(bot, sync_commands=True)
+    slash = SlashCommand(
+        bot,
+        sync_commands=True,
+        debug_guild=ccfaq.config.guild_id(),
+        delete_from_unused_guilds=True
+    )
 
     bot.add_cog(AboutCog(bot, faqs))
     bot.add_cog(DocsCog())

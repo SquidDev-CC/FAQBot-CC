@@ -13,13 +13,13 @@ import os
 LOG = logging.getLogger(__name__)
 
 _token: Optional[str] = None
-_guild_ids: Optional[List[int]] = None
+_guild_id: Optional[int] = None
 _metrics_port: Optional[int] = None
 _eval_server: str = "https://eval.tweaked.cc"
 
 
 def _load() -> None:
-    global _token, _guild_ids, _metrics_port, _eval_server
+    global _token, _guild_id, _metrics_port, _eval_server
 
     if _token is not None:
         return
@@ -29,7 +29,7 @@ def _load() -> None:
             config = json.load(file)
 
         _token = config['token']
-        _guild_ids = config.get('guild_ids')
+        _guild_id = config.get('guild_id')
         _metrics_port = config.get('metrics_port')
         _eval_server = config.get('eval_server', _eval_server)
         LOG.info('Loaded config from config.json')
@@ -48,10 +48,10 @@ def token() -> str:
     return _token
 
 
-def guild_ids() -> Optional[List[int]]:
+def guild_id() -> Optional[int]:
     """Restricted guild ids this bot registers commands under."""
     _load()
-    return _guild_ids
+    return _guild_id
 
 
 def metrics_port() -> Optional[int]:

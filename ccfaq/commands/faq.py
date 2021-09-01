@@ -9,7 +9,6 @@ from discord_slash import SlashCommand, SlashContext
 import discord_slash.utils.manage_commands as manage_commands
 
 from ccfaq.commands import Sendable, SendableContext, track_command
-from ccfaq.config import guild_ids
 from ccfaq.faq_list import FAQ
 
 
@@ -63,7 +62,6 @@ def _add_slash(slash: SlashCommand, faq: FAQ) -> None:
     @slash.subcommand(
         base="faq", name=faq.name,
         description=faq.title,
-        guild_ids=guild_ids(),
     )
     @track_command('faq', 'slash')
     async def _run(ctx: SlashContext) -> None:
@@ -95,7 +93,6 @@ def add_faq_slashcommands(slash: SlashCommand, faqs: List[FAQ]) -> None:
                     required=True,
                 ),
             ],
-            guild_ids=guild_ids(),
         )
         @track_command('faq', 'slash')
         async def _run(ctx: SlashContext, search: str) -> None:
