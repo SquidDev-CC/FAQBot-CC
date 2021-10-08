@@ -17,7 +17,7 @@ Describe what you expect to happen with what you're trying. Explain what you're 
 Here you should describe the issue fully, including any error messages you're getting. Show the specific difference between what you want to happen and what's actually happening, so others know why what you're getting is wrong.
 
 **5. Add information about your environment**  
-Tell what Minecraft and ComputerCraft versions you're running here. Also include any peripheral mods (Plethora, Advanced Peripherals) you have installed and their versions. Some issues, such as Pastebin not working, are tied to a specific version (1.7.10), and knowing this ahead of time will make it much easier to give an answer.
+Tell what Minecraft and ComputerCraft versions you're running here. Also include any peripheral mods (Plethora, Advanced Peripherals) you have installed and their versions. In addition, specify whether you're using an emulator to run your code (and if so, what version), as these may have bugs that normal ComputerCraft does not (especially CraftOS-PC). Some issues, such as Pastebin not working, are tied to a specific version (1.7.10), and knowing this ahead of time will make it much easier to give an answer.
 
 Here is an example of an effective question.
 
