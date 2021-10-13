@@ -57,7 +57,7 @@ class DocsCog(commands.Cog):
         """Search the documentation with a query and link to the result"""
         methods = await self.methods.get()
 
-        search_k = search.lower()
+        search_k = search.lower().rstrip("()")
         if search_k in methods:
             LOG.info(f'event=search search="{search}"')
             await ctx.send(embeds=[_embed(methods[search_k], link)])
@@ -79,7 +79,7 @@ class DocsCog(commands.Cog):
             method = methods[best_match]
             LOG.info(f'event=search.approx search="{search}" result="{method["original_name"]}"')
             await ctx.send(
-                content=f"Cannot find '{search}', using '{method['original_name']}'' instead.",
+                content=f"Cannot find '{search}', using '{method['original_name']}' instead.",
                 embeds=[_embed(method, link)],
             )
             return
