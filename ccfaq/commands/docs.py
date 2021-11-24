@@ -91,7 +91,7 @@ class DocsCog(commands.Cog):
             return
 
         LOG.warning(f'event=search.missing search="{search}"')
-        await ctx.send(content=f"Cannot find method '{search}'. Please check your spelling, or contribute to the documentation at https://github.com/SquidDev-CC/CC-Tweaked.")
+        await ctx.send(content=f"Cannot find method '{search}'. Please check your spelling, or contribute to the documentation at https://github.com/cc-tweaked/CC-Tweaked.")
 
     @commands.command(name="doc", aliases=["d", "docs"])
     @track_command('doc', 'message')
