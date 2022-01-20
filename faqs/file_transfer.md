@@ -11,6 +11,8 @@ Since Minecraft 1.16, it's possible to simply drag and drop files from the file 
 **Save directory (singleplayer)**  
 If you are in a singleplayer world (or multiplayer where you own the server), you can easily open the original ComputerCraft files. The computer's directory is located at `.minecraft/saves/<world>/computercraft/computer/<id>`, where `<world>` is the save name of the world, and `<id>` is the ID of the computer, found with the `id` command.
 
+Honorary mention: You could also use datapacks, this has the benifit of being accesible to every computer. Do note that edits to the datapack don't always sync immediatly, you can force the sync by deactivateing and then reactivating the datapack, however this can cause CC computers to disconnect from rom, rebooting them fixes this. There are commands to shutdown and turn-on every computer in the game as well as the vanilla ones for disabling and enabling datapacks.
+
 **Pastebin**  
 Pastebin has been the de facto way to copy files between CC and real computers for a long time. To copy files into CC, go to https://pastebin.com, paste your file in, and then run `pastebin get <URL> <filename>` with the URL of Pastebin and the name you want to save it as. To go the other way, use `pastebin put <filename>` with the file you want to upload, then go to the URL it gives you and copy the data out. However, using it too much will block you for the rest of the day.
 
