@@ -57,7 +57,7 @@ class DocsCog(commands.Cog):
         """Search the documentation with a query and link to the result"""
         methods = await self.methods.get()
 
-        search_k = search.lower()
+        search_k = search.lower().rstrip("()")
         if search_k in methods:
             LOG.info(f'event=search search="{search}"')
             await ctx.send(embeds=[_embed(methods[search_k], link)])
@@ -79,7 +79,7 @@ class DocsCog(commands.Cog):
             method = methods[best_match]
             LOG.info(f'event=search.approx search="{search}" result="{method["original_name"]}"')
             await ctx.send(
-                content=f"Cannot find '{search}', using '{method['original_name']}'' instead.",
+                content=f"Cannot find '{search}', using '{method['original_name']}' instead.",
                 embeds=[_embed(method, link)],
             )
             return
@@ -91,7 +91,7 @@ class DocsCog(commands.Cog):
             return
 
         LOG.warning(f'event=search.missing search="{search}"')
-        await ctx.send(content=f"Cannot find method '{search}'. Please check your spelling, or contribute to the documentation at https://github.com/SquidDev-CC/CC-Tweaked.")
+        await ctx.send(content=f"Cannot find method '{search}'. Please check your spelling, or contribute to the documentation at https://github.com/cc-tweaked/CC-Tweaked.")
 
     @commands.command(name="doc", aliases=["d", "docs"])
     @track_command('doc', 'message')

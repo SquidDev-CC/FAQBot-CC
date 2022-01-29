@@ -10,4 +10,4 @@ This bot is used in the [Minecraft Computer Mods][mcm] Discord Server. You can a
 
 [invite]: https://discord.com/api/oauth2/authorize?client_id=698485015339597824&permissions=0&scope=bot%20applications.commands "Invite this bot to your guild."
 [mcm]: https://discord.computercraft.cc "The Minecraft Computer Mods Discord"
-[eval.tweaked.cc]: https://github.com/SquidDev-CC/eval.tweaked.cc
+[eval.tweaked.cc]: https://github.com/cc-tweaked/eval.tweaked.cc
