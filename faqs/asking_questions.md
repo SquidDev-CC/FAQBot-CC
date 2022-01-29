@@ -17,31 +17,4 @@ Describe what you expect to happen with what you're trying. Explain what you're 
 Here you should describe the issue fully, including any error messages you're getting. Show the specific difference between what you want to happen and what's actually happening, so others know why what you're getting is wrong.
 
 **5. Add information about your environment**  
-Tell what Minecraft and ComputerCraft versions you're running here. Also include any peripheral mods (Plethora, Advanced Peripherals) you have installed and their versions. In addition, specify whether you're using an emulator to run your code (and if so, what version), as these may have bugs that normal ComputerCraft does not (especially CraftOS-PC). Some issues, such as Pastebin not working, are tied to a specific version (1.7.10), and knowing this ahead of time will make it much easier to give an answer.
-
-Here is an example of an effective question.
-
-> [1] I'm having some trouble making the Parallel API work. I want to run two functions together, but only one is being called.  
-> [2] Here is the code I'm using:  
-> \`\`\`lua  
-> ```lua
-> local function eventLoop()  
->   while true do  
->     local event, key = os.pullEvent("key")  
->     if key == keys.a then print("Hello!") end  
->   end  
-> end  
-> local function printLoop()  
->   while true do  
->     term.setCursorPos(1, 1)  
->     term.clear()  
->     print("Time: " .. textutils.formatTime(os.time()))  
->     sleep(1)  
->   end  
-> end  
-> parallel.waitForAny(eventLoop(), printLoop())  
-> ```
-> \`\`\`  
-> [3] I want to have the event loop and print loop functions running at the same time, so I can press A and have it say hello, while the screen also updates with the time every second.  
-> [4] Instead, it doesn't show the time, and only prints hello when I press A.  
-> [5] I'm running ComputerCraft 1.98.2 on Minecraft 1.16.5.  
+Tell what Minecraft and ComputerCraft versions you're running here. Also include any peripheral mods (Plethora, Advanced Peripherals) you have installed and their versions. In addition, specify whether you're using an emulator to run your code (and if so, what version), as these may have bugs that normal ComputerCraft does not (especially CraftOS-PC).
