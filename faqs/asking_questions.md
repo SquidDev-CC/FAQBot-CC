@@ -8,7 +8,7 @@ Knowing how to effectively ask a question is essential in getting help from othe
 State briefly what the issue you're running into is. Explain your goal and what problem is occurring. This should be no more than a few sentences; more detail will be added later.
 
 **2. Show the code or program you're running**  
-This is where you link to or embed the code you are using. If you're writing a program, paste in the code you wrote inside "\`\`\`lua" and "\`\`\`" brackets - this gives it some styling that makes it easier to read. (An example is listed below.) If you're using someone else's program, link the Pastebin or forum URL that you got it from.
+This is where you link to or embed the code you are using. If you're writing a program, paste in the code you wrote inside "\`\`\`lua" and "\`\`\`" brackets - this gives it some styling that makes it easier to read. If you're using someone else's program, link the Pastebin or forum URL that you got it from.
 
 **3. Explain what you want to have happen**  
 Describe what you expect to happen with what you're trying. Explain what you're trying to accomplish too - in some cases, [what you want to accomplish may be easier to do another way rather than solving the current issue you're facing](https://en.wikipedia.org/wiki/XY_problem).
