@@ -2,7 +2,7 @@
 Feel welcome to contributing to this repository!
 
 We rely on volunteers like you to expand our list of FAQs. You can always discuss possible contributions in the Discord
-guild. Mention @`HydroNitrogen#9999` for more information and help.
+guild.
 
 ## Pull Request Process
 
