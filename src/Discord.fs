@@ -73,9 +73,8 @@ let private runAsync (logger : ILogger) (fn : 'a -> Task) input =
     task.ContinueWith(
       (fun output ->
         if output.IsFaulted then
-          let e = output.Exception
-          let e = if e.InnerExceptions.Count = 0 then e.InnerExceptions[0] else e
-          logger.LogError(e, "Error running command or interaction")
+          for e in output.Exception.InnerExceptions do
+            logger.LogError(e, "Error running command or interaction")
         else if output.IsCanceled then
           logger.LogWarning("Error running async task")
         else

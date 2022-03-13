@@ -1,7 +1,6 @@
 ﻿open System.Reflection
 open System.Threading
 open System.Threading.Tasks
-open System.Net.Http
 
 open Discord
 open Discord.Commands
@@ -39,6 +38,13 @@ open FAQBotCC
       .AddSingleton<Commands.Docs.MethodStore>()
       .AddSingleton<Commands.Eval.MessageEvaluator>()
       .BuildServiceProvider()
+
+  let () =
+    let logger = services.GetService<ILogger<TaskScheduler>>()
+    TaskScheduler.UnobservedTaskException.AddHandler (fun _ args ->
+      args.SetObserved()
+      for e in args.Exception.InnerExceptions do
+        logger.LogError(e, "Unhandled exception in background task"))
 
   use _ = Telemetry.makeTracerProvider config
   use _ = Telemetry.makeMetricsProvider config
