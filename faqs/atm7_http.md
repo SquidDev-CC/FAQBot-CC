@@ -19,7 +19,7 @@ search: atm7
 2. Hope they do it and not deny it cause of "security"
 
 (If you're a server owner)
-1. Go into the files of you're server and go into ``config``
+1. Go into the files of your server and go into ``config``
 2. Open ``computercraft.cfg``
 3. Search for ``http``
 4. Change ``enabled`` or ``enable`` to true
