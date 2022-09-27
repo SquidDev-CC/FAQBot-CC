@@ -6,7 +6,7 @@ search: atm7
 **Singleplayer**
 1. Press the windows key and R at the same time
 2. Type in ``%appdata%\.minecraft``
-3. Go into ``saves`` then the name of you're save/world
+3. Go into ``saves`` then the name of your save/world
 4. Then go into serverconfig and search for ``computercraft-server.toml``
 5. Open the file in notepad or any other text editor and search for ``[http]``
 6. There you should find ``enabled``, that should be set to false
