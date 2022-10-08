@@ -57,6 +57,7 @@ let makeClient (services : IServiceProvider) =
     GatewayIntents.Guilds
     ||| GatewayIntents.GuildMessages
     ||| GatewayIntents.DirectMessages
+    ||| GatewayIntents.MessageContent
   let client = new DiscordSocketClient(socketConfig)
   client.add_Log (log logger)
 
