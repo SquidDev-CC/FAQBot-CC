@@ -59,6 +59,18 @@ let makeClient (services : IServiceProvider) =
     ||| GatewayIntents.DirectMessages
   let client = new DiscordSocketClient(socketConfig)
   client.add_Log (log logger)
+
+  Telemetry.metricsSource.CreateObservableGauge(
+    name = "discord_socket_up",
+    description = "Is the socket connected",
+    observeValue =
+      fun () ->
+        match client.ConnectionState with
+        | ConnectionState.Connected -> 1
+        | _ -> 0
+  )
+  |> ignore
+
   client
 
 
