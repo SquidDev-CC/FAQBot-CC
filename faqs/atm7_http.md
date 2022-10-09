@@ -15,11 +15,9 @@ search: atm7 http
 9. Save the file and close the editor, then save and quit to title (or `stop` the server), then relaunch the world.
 
 **Multiplayer**
-(If you're a player)
-1. Ask the server owner or someone who has access to the files to activate http
-2. Hope they do it and not deny it cause of "security"
+If you're a player on the server, you will need to ask the server owner/operator to make these changes for you. 
 
-(If you're a server owner)
+(If you are a server owner)
 1. Go into the files of your server and go into ``world``
 2. Open ``serverconfig``
 3. Edit ``computercraft-server.toml``
