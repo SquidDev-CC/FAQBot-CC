@@ -4,8 +4,7 @@ search: atm7 http
 ---
 
 **Singleplayer**
-1. In CurseForge, go to "My Modpacks" and right-click the ATM-7 modpack.
-2. Select "Open Folder" in the dropdown menu.
+1. Refer to your launcher, you are looking for the game folder.
 3. Open the folder titled `saves`.
 4. Find your world folder, and open it.
 5. Find a folder titled `serverconfig`, and open it.
@@ -20,7 +19,7 @@ If you're a player on the server, you will need to ask the server owner/operator
 
 (If you are a server owner)
 1. Stop the server (run the command `stop`).
-2. Go into the files of your server and go into ``world``
+2. Go into the files of your server, then go into ``world``
 3. Open ``serverconfig``
 4. Edit ``computercraft-server.toml``
 5. Search for ``http``
