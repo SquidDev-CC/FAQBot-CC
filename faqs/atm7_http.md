@@ -1,17 +1,18 @@
 ---
-title: How to enable HTTP on ATM7
-search: atm7
+title: How to enable HTTP on >1.12
+search: atm7 http
 ---
 
 **Singleplayer**
-1. Press the windows key and R at the same time
-2. Type in ``%appdata%\.minecraft``
-3. Go into ``saves`` then the name of your save/world
-4. Then go into serverconfig and search for ``computercraft-server.toml``
-5. Open the file in notepad or any other text editor and search for ``[http]``
-6. There you should find ``enabled``, that should be set to false
-7. Set the option to true and save the file
-8. You're done
+1. In CurseForge, go to "My Modpacks" and right-click the ATM-7 modpack.
+2. Select "Open Folder" in the dropdown menu.
+3. Open the folder titled `saves`.
+4. Find your world folder, and open it.
+5. Find a folder titled `serverconfig`, and open it.
+6. Search for a file named `computercraft-server.toml`, and open it in a text editor.
+7. Search the file for a section starting with `[http]`.
+8. Find `enabled` within this section, and set it to `true`.
+9. Save the file and close the editor, then save and quit to title (or `stop` the server), then relaunch the world.
 
 **Multiplayer**
 (If you're a player)
@@ -19,7 +20,8 @@ search: atm7
 2. Hope they do it and not deny it cause of "security"
 
 (If you're a server owner)
-1. Go into the files of your server and go into ``config``
-2. Open ``computercraft.cfg``
-3. Search for ``http``
-4. Change ``enabled`` or ``enable`` to true
+1. Go into the files of your server and go into ``world``
+2. Open ``serverconfig``
+3. Edit ``computercraft-server.toml``
+4. Search for ``http``
+5. Change ``enabled`` or ``enable`` to true
