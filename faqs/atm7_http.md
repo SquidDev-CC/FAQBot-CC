@@ -22,5 +22,6 @@ If you're a player on the server, you will need to ask the server owner/operator
 2. Go into the files of your server, then go into ``world``
 3. Open ``serverconfig``
 4. Edit ``computercraft-server.toml``
-5. Search for ``http``
-6. Change ``enabled`` or ``enable`` to true
+5. Search the file for a section starting with `[http]`.
+6. Find `enabled` within this section, and set it to `true`.
+7. Save the file and close the editor.
