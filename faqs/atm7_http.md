@@ -8,7 +8,7 @@ search: atm7 http
 2. Navigate to the Singleplayer menu and highlight your world.
 3. Press the "Edit" button on the bottom, then "Open World Folder"
 4. Find a folder titled `serverconfig`, and open it.
-5. Exit the game (or run `stop` on the server).
+5. Exit the game.
 6. Search for a file named `computercraft-server.toml`, and open it in a text editor.
 7. Search the file for a section starting with `[http]`.
 8. Find `enabled` within this section, and set it to `true`.
