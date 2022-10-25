@@ -4,9 +4,9 @@ search: atm7 http
 ---
 
 **Singleplayer**
-1. Refer to your launcher, you are looking for the game folder.
-2. Open the folder titled `saves`.
-3. Find your world folder, and open it.
+1. Launch Minecraft.
+2. Navigate to the Singleplayer menu and highlight your world.
+3. Press the "Edit" button on the bottom, then "Open World Folder"
 4. Find a folder titled `serverconfig`, and open it.
 5. Exit the game (or run `stop` on the server).
 6. Search for a file named `computercraft-server.toml`, and open it in a text editor.
