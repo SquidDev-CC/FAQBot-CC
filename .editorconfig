@@ -22,3 +22,6 @@ fsharp_max_record_width=80
 fsharp_max_value_binding_width=80
 fsharp_blank_lines_around_nested_multiline_expressions=false
 fsharp_space_before_colon=true
+
+[*.nix]
+indent_size = 2

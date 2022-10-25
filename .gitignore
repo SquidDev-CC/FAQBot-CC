@@ -6,6 +6,7 @@
 *.pyc
 /obj
 /bin
+/result
 
 # Editor tooling
 .fake
