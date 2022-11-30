@@ -18,4 +18,5 @@ centerWrite("Hello world!")
 ```
 This code starts by getting the current `term` object's size. Then it calculates the horizontal starting position for writing text by dividing the terminal width by 2, and subtracting half of the text length (the math.ceil it is to make sure the result is an integer). 
 Finally, it sets the text cursor  to this x position, and the cursor's current y position.
+
 You may need to adapt this code to your situation, especially when you are working with non-default terminals, monitors, etc.
