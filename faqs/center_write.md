@@ -7,7 +7,8 @@ There is no builtin function to write text center-aligned in ComputerCraft, but 
 local function centerWrite(text)
     local width, height = term.getSize() -- Get terminal size
     local x, y = term.getCursorPos() -- Get current cursor position
-    term.setCursorPos(math.ceil((width / 2) - (text:len() / 2)), y)
+    local newX = math.ceil((width / 2) - (text:len() / 2))
+    term.setCursorPos(newX, y)
     term.write(text)
 end
 ```
@@ -15,5 +16,6 @@ After declaring this function, you can use it like this:
 ```lua
 centerWrite("Hello world!")
 ```
-This code gets the current `term` objects size. Now, to get a starting point for writing text, it divides the `term` width by 2. It then subtracts half of the text length, and what results is the x value to start writing the text from to appear 'centered'.
+This code starts by getting the current `term` object's size. Then it calculates the horizontal starting position for writing text by dividing the terminal width by 2, and subtracting half of the text length (the math.ceil it is to make sure the result is an integer). 
+Finally, it sets the text cursor  to this x position, and the cursor's current y position.
 You may need to adapt this code to your situation, especially when you are working with non-default terminals, monitors, etc.
