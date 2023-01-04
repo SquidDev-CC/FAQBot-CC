@@ -50,6 +50,7 @@
   (fetchNuGet { pname = "OpenTelemetry.Exporter.Console"; version = "1.3.2"; sha256 = "1ka06mpsvraiqmcp2sbd7s5b6cc3wdypb1hd1wygirfgbkr9gdv9"; })
   (fetchNuGet { pname = "OpenTelemetry.Exporter.OpenTelemetryProtocol"; version = "1.3.2"; sha256 = "14p6rn68mqrch3ani17vwyl4ggjz680nxkw1nf65xmf1ljlkb4iq"; })
   (fetchNuGet { pname = "OpenTelemetry.Extensions.DependencyInjection"; version = "1.4.0-rc.1"; sha256 = "19sraav8y53yi1pf8dsjd2n5cnffqd876rjxmlkkbi550qdr9l0v"; })
+  (fetchNuGet { pname = "OpenTelemetry.Extensions.Propagators"; version = "1.4.0-rc.1"; sha256 = "0w8wszdv9gfmf3yg04ibpqz7vz7g7kkmbj1wmg40prq7z44cb18i"; })
   (fetchNuGet { pname = "OpenTelemetry.Instrumentation.Http"; version = "1.0.0-rc9.10"; sha256 = "1f07fkrvcb5clr2ciwjx9dfxmdq7x48clqqjwv976m9aby2m16j3"; })
   (fetchNuGet { pname = "System.Collections.Immutable"; version = "1.4.0"; sha256 = "14zwxm2xkp19j0m3xp7p25sbndhlak9g2z19kgl6md2zqkqidjkh"; })
   (fetchNuGet { pname = "System.Collections.Immutable"; version = "5.0.0"; sha256 = "1kvcllagxz2q92g81zkz81djkn2lid25ayjfgjalncyc68i15p0r"; })

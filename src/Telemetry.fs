@@ -7,6 +7,8 @@ open OpenTelemetry
 open OpenTelemetry.Trace
 open OpenTelemetry.Metrics
 open OpenTelemetry.Resources
+open OpenTelemetry.Context.Propagation
+open OpenTelemetry.Extensions.Propagators
 
 let activitySource = new ActivitySource("FAQBotCC")
 let metricsSource = new Meter("FAQBotCC")
@@ -21,6 +23,8 @@ let makeTracerProvider (config : Config) =
       .SetResourceBuilder(makeResources ())
       .AddSource(activitySource.Name)
       .AddHttpClientInstrumentation()
+
+  Sdk.SetDefaultTextMapPropagator(CompositeTextMapPropagator([| JaegerPropagator(); TraceContextPropagator() |]))
 
   if config.HasMetrics then
     builder.AddOtlpExporter() |> ignore
