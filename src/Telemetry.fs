@@ -17,11 +17,12 @@ let makeTracerProvider (config : Config) =
   let builder =
     Sdk
       .CreateTracerProviderBuilder()
+      .SetSampler(new AlwaysOnSampler())
       .SetResourceBuilder(makeResources ())
       .AddSource(activitySource.Name)
       .AddHttpClientInstrumentation()
 
-  if config.MetricsPort.IsSome then
+  if config.HasMetrics then
     builder.AddOtlpExporter() |> ignore
   else
     builder.AddConsoleExporter() |> ignore
@@ -37,14 +38,10 @@ let makeMetricsProvider (config : Config) =
       .AddMeter(metricsSource.Name)
       .AddHttpClientInstrumentation()
 
-  match config.MetricsPort with
-  | Some port ->
-    provider.AddPrometheusExporter (fun config ->
-      config.StartHttpListener <- true
-      config.ScrapeResponseCacheDurationMilliseconds <- 0
-      config.HttpListenerPrefixes <- [| $"http://127.0.0.1:{port}" |])
-    |> ignore
-  | None -> provider.AddConsoleExporter() |> ignore
+  if config.HasMetrics then
+    provider.AddOtlpExporter() |> ignore
+  else
+    provider.AddConsoleExporter() |> ignore
 
   // A little useless, but the prometheus exporter fails if there's no metrics. We should
   // probably swap to otel at some point.
