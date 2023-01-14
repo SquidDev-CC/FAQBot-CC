@@ -12,7 +12,8 @@ search: atm7 http
 6. Search for a file named `computercraft-server.toml`, and open it in a text editor.
 7. Search the file for a section starting with `[http]`.
 8. Find `enabled` within this section, and set it to `true`.
-9. Save the file and close the editor.
+9. If you wish to also have access to websockets, look for `websocket_enabled` and ensure that it is `true` as well.
+10. Save the file and close the editor.
 
 **Multiplayer**
 If you're a player on the server, you will need to ask the server owner/operator to make these changes for you. 
@@ -23,4 +24,5 @@ If you're a player on the server, you will need to ask the server owner/operator
 4. Edit ``computercraft-server.toml``
 5. Search the file for a section starting with `[http]`.
 6. Find `enabled` within this section, and set it to `true`.
-7. Save the file and close the editor.
+7. If you wish to also have access to websockets, look for `websocket_enabled` and ensure that it is `true` as well.
+8. Save the file and close the editor.
