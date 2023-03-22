@@ -11,8 +11,7 @@
       platforms = ["x86_64-linux"];
 
       overlay = final: prev: {
-        "${name}" =
-        final.buildDotnetModule {
+        "${name}" = final.buildDotnetModule {
           pname = name;
           version = "1.0.0";
 
@@ -39,9 +38,14 @@
           # crossgen2 is installed as a binary but, predictably, doesn't support nix. We need to patch it to use nix's
           # ld implementation, then also force icu to be on the CoreCLR's library path.
           postConfigure = ''
-            crossgen2_tools=$HOME/.nuget/packages/microsoft.netcore.app.crossgen2.linux-x64/6.0.11/tools
+            crossgen2_tools=$HOME/.nuget/packages/microsoft.netcore.app.crossgen2.linux-x64/6.0.14/tools
             autoPatchelf $crossgen2_tools
             patchelf --add-rpath ${final.lib.makeLibraryPath [ final.icu ]} $crossgen2_tools/libcoreclr.so
+          '';
+
+          postInstall = ''
+            mkdir -p "$out/share/${name}/"
+            cp -r faqs "$out/share/${name}/"
           '';
 
           meta = { inherit platforms; };
