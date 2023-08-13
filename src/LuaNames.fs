@@ -146,6 +146,7 @@ let private lua52Vars =
 let private lua53Vars =
   [| "coroutine.isyieldable"
      "string.pack"
+     "string.packsize"
      "string.unpack"
      "table.move"
      "utf8.char"
