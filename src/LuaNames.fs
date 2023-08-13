@@ -152,6 +152,9 @@ let private lua53Vars =
      "bit32.replace"
      "bit32.rrotate"
      "bit32.rshift"
+     "string.pack"
+     "string.packsize"
+     "string.unpack"
      "table.pack"
      "table.unpack" |]
 
