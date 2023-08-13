@@ -136,24 +136,24 @@ let private lua52Vars =
      "bit32.replace"
      "bit32.rrotate"
      "bit32.rshift"
+     "debug.join"
+     "debug.upvalueid"
+     "package.searchpath"
+     "rawlen"
      "table.pack"
      "table.unpack" |]
 
 let private lua53Vars =
-  [| "bit32.arshift"
-     "bit32.band"
-     "bit32.bnot"
-     "bit32.bor"
-     "bit32.btest"
-     "bit32.bxor"
-     "bit32.extract"
-     "bit32.lrotate"
-     "bit32.lshift"
-     "bit32.replace"
-     "bit32.rrotate"
-     "bit32.rshift"
-     "table.pack"
-     "table.unpack" |]
+  [| "coroutine.isyieldable"
+     "string.pack"
+     "string.unpack"
+     "table.move"
+     "utf8.char"
+     "utf8.charpattern"
+     "utf8.codepoint"
+     "utf8.codes"
+     "utf8.len"
+     "utf8.offset" |]
 
 let vars : IReadOnlyDictionary<string, string> =
   let out = Dictionary<string, string>(modules)
