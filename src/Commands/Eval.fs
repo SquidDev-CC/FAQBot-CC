@@ -162,7 +162,6 @@ type EvalTextCommand(evaluator : MessageEvaluator) =
         return! context.Respond(message, file = attachment, components = components)
     }
 
-
 /// <summary>
 /// Handlers for the rerun and delete buttons.
 ///
@@ -175,6 +174,12 @@ type EvalTextCommand(evaluator : MessageEvaluator) =
 type EvalInteractions(evaluator : MessageEvaluator) =
   inherit InteractionModuleBase<SocketInteractionContext<SocketMessageComponent>>()
 
+  member private this.canInteract(message : IMessage) : bool =
+    match this.Context.User, this.Context.Channel with
+    | user, _ when message.Author = user -> true
+    | IGuildUser user, IGuildChannel channel when user.GetPermissions(channel).ManageMessages -> true
+    | _ -> false
+
   member this.GetOriginal() =
     task {
       let interaction = this.Context.Interaction in
@@ -183,10 +188,12 @@ type EvalInteractions(evaluator : MessageEvaluator) =
       | None ->
         let! () = interaction.RespondAsync("I can't remember anything about this message :/.", ephemeral = true)
         return None
-      | Some message when message.Author <> this.Context.User ->
+      | Some message when not (this.canInteract message) ->
         let! () = interaction.RespondAsync("Only the original commenter can do this. Sorry!", ephemeral = true)
         return None
-      | Some message -> return Some message
+      | Some message ->
+        Printf.printfn "Get original => %s" (this.Context.User.GetType().ToString())
+        return Some message
     }
 
   [<ComponentInteraction("on_rerun")>]

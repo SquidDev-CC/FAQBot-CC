@@ -208,6 +208,15 @@ module Extensions =
   /// <summary>Create a new metrics tag.</summary>
   let tag name value : KeyValuePair<string, obj> = KeyValuePair(name, value)
 
+  let (|IGuildUser|_|) (user : IUser) =
+    match user with
+    | :? IGuildUser as user -> Some user
+    | _ -> None
+
+  let (|IGuildChannel|_|) (channel : IMessageChannel) =
+    match channel with
+    | :? IGuildChannel as channel -> Some channel
+    | _ -> None
 
 [<Extension>]
 type Extensions =
