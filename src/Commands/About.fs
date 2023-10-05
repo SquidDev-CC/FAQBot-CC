@@ -37,16 +37,14 @@ let private makeEmbed (client : IDiscordClient) =
       x.IsInline <- true)
     |> ignore
 
-  addField
-    ":information_source: **Commands**"
-    "Please use the `%help` to list all possible commands.\nUse `/faq <search>` to find faqs related to your search."
-  addField ":hash: **Developers**" "**HydroNitrogen** as creator and other contributors mentioned on GitHub."
-  addField ":asterisk: **FAQs**" $"Currently there are {Faq.getAll () |> List.length} FAQs loaded into memory."
+  addField ":information_source: **Commands**" "Available commands: `/faq`, `/docs`, `/source`, `%eval`."
+
+  addField ":asterisk: **FAQs**" $"Currently there are {Faq.getAll () |> List.length} FAQs available."
 
   let started = Diagnostics.Process.GetCurrentProcess().StartTime
   let uptime = (DateTime.Now - started).ToString(@"d' day(s), 'hh\:mm\:ss")
-  let started = started.ToString(@"yyyy\-MM\-dd HH\:mm\:ss' UTC'")
-  addField ":up: **Uptime information**" $"Bot started: `{started}`\nBot uptime: `{uptime}`"
+  let started = int (started.ToUniversalTime() - DateTime.UnixEpoch).TotalSeconds
+  addField ":up: **Uptime information**" $"Bot started: <t:{started}:f>\nBot uptime: {uptime}"
 
   embed.Build()
 
