@@ -7,7 +7,7 @@ search: vscode
 - [Lua](https://marketplace.visualstudio.com/items?itemName=sumneko.lua) by sumneko adds Lua autocomplete, highlighting, and error checking.
 - [ComputerCraft](https://marketplace.visualstudio.com/items?itemName=jackmacwindows.vscode-computercraft) by JackMacWindows adds autocomplete for CC functions.
 
-These have been packaged into [one extension pack](https://marketplace.visualstudio.com/items?itemName=lemmmy.computercraft-extension-pack) by Lemmmy.
+These have been packaged into [one extension pack](https://marketplace.visualstudio.com/items?itemName=lemmmy.computercraft-extension-pack).
 
 In addition, the [CraftOS-PC for VS Code](https://marketplace.visualstudio.com/items?itemName=jackmacwindows.craftos-pc) extension by JackMacWindows adds integration with CraftOS-PC, as well as a remote terminal and file viewer for standard CC.
 
