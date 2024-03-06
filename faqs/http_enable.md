@@ -1,7 +1,9 @@
 ---
 title: How to enable HTTP on >1.12
-search: atm7 http
+search: http
 ---
+
+HTTP may be disabled by default on some modpacks. Follow these steps to enable it.
 
 **Singleplayer**
 1. Launch Minecraft.
