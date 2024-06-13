@@ -23,31 +23,6 @@
 
           selfContainedBuild = true;
 
-          nativeBuildInputs = [
-            # Our dependencies
-            final.icu
-            final.libkrb5
-            final.openssl
-            # For crossgen2 (see postConfigure)
-            final.autoPatchelfHook
-            final.lttng-ust_2_12
-            final.stdenv.cc.cc.lib
-            final.zlib
-          ];
-
-          # crossgen2 is installed as a binary but, predictably, doesn't support nix. We need to patch it to use nix's
-          # ld implementation, then also force icu to be on the CoreCLR's library path.
-          postConfigure = ''
-            crossgen2_tools=$HOME/.nuget/packages/microsoft.netcore.app.crossgen2.linux-x64/6.0.14/tools
-            autoPatchelf $crossgen2_tools
-            patchelf --add-rpath ${final.lib.makeLibraryPath [ final.icu ]} $crossgen2_tools/libcoreclr.so
-          '';
-
-          postInstall = ''
-            mkdir -p "$out/share/${name}/"
-            cp -r faqs "$out/share/${name}/"
-          '';
-
           meta = { inherit platforms; };
         };
       };

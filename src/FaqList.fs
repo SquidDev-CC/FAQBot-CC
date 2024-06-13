@@ -1,6 +1,7 @@
 namespace FAQBotCC.Faqs
 
 open System.IO
+open System.Text
 open System.Text.RegularExpressions
 
 open Discord
@@ -43,19 +44,28 @@ module Faq =
   let private frontmatter =
     new Regex("---\n(.*?)\n---\n(.*)$", RegexOptions.Multiline ||| RegexOptions.Singleline)
 
-  let private loadFile name =
-    let contents = File.ReadAllText(name)
+  let assembly = (typedefof<Faq>.Assembly)
+
+  let private loadFile (resource, name) =
+    let contents =
+      use handle = assembly.GetManifestResourceStream(resource)
+      use reader = new StreamReader(handle, Encoding.UTF8)
+      reader.ReadToEnd()
     let matches = frontmatter.Match(contents).Groups
     let info = yaml.Deserialize<FaqInfo>(matches[1].Value)
-    { Name = Path.GetFileNameWithoutExtension(name)
+    { Name = name
       Contents = matches[ 2 ].Value.Trim()
       Title = info.Title
       Search = info.Search }
 
   let private faqs =
     lazy
-      (Directory.EnumerateFiles("faqs", "*.md")
-       |> Seq.filter (fun x -> Path.GetFileName(x) <> "example.md")
+      (let manifestName = new Regex("^[^.]+\\.faqs\\.(.*)\\.md$")
+       assembly.GetManifestResourceNames()
+       |> Seq.collect (fun resource ->
+         let m = manifestName.Match(resource)
+         if m.Success then Seq.singleton (resource, m.Groups[1].Value) else Seq.empty)
+       |> Seq.filter (fun (_, name) -> name <> "example")
        |> Seq.map loadFile
        |> List.ofSeq)
 
