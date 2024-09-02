@@ -18,5 +18,5 @@ __underlined text__,
 :regional_indicator_e: :regional_indicator_m: :regional_indicator_o: :regional_indicator_j: :regional_indicator_i:
 
 Make sure to write in understandable British English, Wiki-style.
-Refer to your sources of information where possible, preferably to [wiki.computercraft.cc](https://wiki.computercraft.cc) articles.
+Refer to your sources of information where possible, preferably to [tweaked.cc](https://tweaked.cc) articles.
 The text must be concise, brief and comfortable to read.
