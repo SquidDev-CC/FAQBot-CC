@@ -1,10 +1,10 @@
 ---
-title: Optifine Compatibility
+title: OptiFine Compatibility
 search: optifine
 ---
-Optifine is known to be [incompatible with many mods, including CC: Tweaked](<https://github.com/sp614x/optifine/issues/7395>). If you are experiencing problems with peripherals not connecting, and you have Optifine installed, you will need to remove Optifine.
+OptiFine is known to be [incompatible with many mods, including CC: Tweaked](<https://github.com/sp614x/optifine/issues/7395>). If you are experiencing problems with peripherals not connecting, and you have OptiFine installed, you will need to remove OptiFine.
 
-There are many replacement mods available for Optifine's functionality. You don't need all of these—you can pick just the ones you need.
+There are many replacement mods available for OptiFine's functionality. You don't need all of these—you can pick just the ones you need.
 
 ### Forge/NeoForge
 - **[Embeddium](<https://modrinth.com/mod/embeddium/versions>): performance improvements**
