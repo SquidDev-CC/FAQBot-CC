@@ -175,6 +175,36 @@ module Extensions =
         this.SetStatus(if ok then ActivityStatusCode.Ok else ActivityStatusCode.Error)
         |> ignore
 
+  let private deprecatedMessage =
+    (":warning: % commands are deprecated due to [changes in bot verification](<https://support-dev.discord.com/hc/articles/40281523410967>). "
+     + "Please switch to slash commands.")
+
+  type IDiscordContext with
+    member this.RespondCommand
+      (
+        deprecated : bool,
+        ?text : string,
+        ?isTTS : bool,
+        ?embed : Embed,
+        ?embeds : Embed array,
+        ?file : FileAttachment,
+        ?components : MessageComponent
+      ) : Task =
+      let text =
+        match deprecated, text with
+        | false, None -> None
+        | false, Some x -> Some x
+        | true, None -> Some deprecatedMessage
+        | true, Some x -> Some(deprecatedMessage + "\n" + x)
+      this.Respond(
+        ?text = text,
+        ?isTTS = isTTS,
+        ?embed = embed,
+        ?embeds = embeds,
+        ?file = file,
+        ?components = components
+      )
+
 
   type IDiscordClient with
     member this.GetMessageAsync(reference : MessageReference) =

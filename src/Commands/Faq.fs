@@ -30,11 +30,18 @@ type FaqTextCommand() =
       |> List.map Faq.toEmbed
     match matching with
     | [] ->
-      context.Respond(
-        "Sorry, I did not find any faqs related to your search. Please contribute to expand my faq list <https://github.com/SquidDev-CC/FAQBot-CC> or use `/faq`."
+      context.RespondCommand(
+        deprecated = true,
+        text =
+          "Sorry, I did not find any faqs related to your search. Please contribute to expand my faq list <https://github.com/SquidDev-CC/FAQBot-CC> or use `/faq`."
       )
-    | [ faq ] -> context.Respond(embed = faq)
-    | faqs -> context.Respond(text = "Multiple matching FAQs. Seriously, just use `/faq`.", embeds = Array.ofList faqs)
+    | [ faq ] -> context.RespondCommand(deprecated = true, embed = faq)
+    | faqs ->
+      context.RespondCommand(
+        deprecated = true,
+        text = "Multiple matching FAQs. Seriously, just use `/faq`.",
+        embeds = Array.ofList faqs
+      )
 
 
 /// <summary>

@@ -49,7 +49,8 @@ let private makeEmbed (client : IDiscordClient) =
   embed.Build()
 
 
-let private run (context : IDiscordContext) = context.Respond(embed = makeEmbed context.Client)
+let private run (context : IDiscordContext) deprecated =
+  context.RespondCommand(deprecated = deprecated, embed = makeEmbed context.Client)
 
 
 type AboutTextCommand() =
@@ -57,11 +58,11 @@ type AboutTextCommand() =
 
   [<Command("about")>]
   [<Summary(description)>]
-  member this.About() : Task = run this.Context.DiscordContext
+  member this.About() : Task = run this.Context.DiscordContext true
 
 
 type AboutInteractionCommand() =
   inherit InteractionModuleBase<IInteractionContext>()
 
   [<SlashCommand("ccfaq", description)>]
-  member this.About() : Task = run this.Context.DiscordContext
+  member this.About() : Task = run this.Context.DiscordContext false

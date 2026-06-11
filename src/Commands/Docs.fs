@@ -94,16 +94,18 @@ type MethodNameAutocompleteHandler(methods : MethodStore) =
     }
 
 
-let private run (context : IDiscordContext) (methods : MethodStore) (query : string) link : Task =
+let private run (context : IDiscordContext) (methods : MethodStore) (query : string) link deprecated : Task =
   task {
     let! methods = methods.Get
     let query = query.TrimEnd('(', ')', ' ')
     // First attempt to find a CC:T method.
     match Lookup.find methods query with
-    | Lookup.Exact value -> return! context.Respond(embed = DocumentedItem.makeEmbed value link)
+    | Lookup.Exact value ->
+      return! context.RespondCommand(deprecated = deprecated, embed = DocumentedItem.makeEmbed value link)
     | Lookup.Fuzzy (name, item) ->
       return!
-        context.Respond(
+        context.RespondCommand(
+          deprecated = deprecated,
           text = $"Cannot find '{query}', using '{name}' instead.",
           embed = DocumentedItem.makeEmbed item link
         )
@@ -111,16 +113,23 @@ let private run (context : IDiscordContext) (methods : MethodStore) (query : str
       // Failing that, find a built-in Lua one.
       let luaQuery = query.ToLowerInvariant()
       match Lookup.find LuaNames.vars luaQuery with
-      | Lookup.Exact link -> return! context.Respond(embed = EmbedBuilder().WithTitle(luaQuery).WithUrl(link).Build())
+      | Lookup.Exact link ->
+        return!
+          context.RespondCommand(
+            deprecated = deprecated,
+            embed = EmbedBuilder().WithTitle(luaQuery).WithUrl(link).Build()
+          )
       | Lookup.Fuzzy (name, link) ->
         return!
-          context.Respond(
+          context.RespondCommand(
+            deprecated = deprecated,
             text = $"Cannot find '{query}', using '{name}' instead.",
             embed = EmbedBuilder().WithTitle(name).WithUrl(link).Build()
           )
       | Lookup.Missing ->
         return!
-          context.Respond(
+          context.RespondCommand(
+            deprecated = deprecated,
             text =
               $"Cannot find '{query}'. Please check your spelling, or contribute to the documentation at https://github.com/cc-tweaked/CC-Tweaked."
           )
@@ -147,13 +156,13 @@ type DocsTextCommand(methods : MethodStore) =
   [<Alias("d")>]
   [<Summary(Descriptions.docs)>]
   member this.Docs([<Summary(Descriptions.arg)>] name : string) =
-    run this.Context.DiscordContext methods name DocumentedItem.linkDocs
+    run this.Context.DiscordContext methods name DocumentedItem.linkDocs true
 
   [<Command("source")>]
   [<Alias("s")>]
   [<Summary(Descriptions.source)>]
   member this.Source([<Summary(Descriptions.arg)>] name : string) =
-    run this.Context.DiscordContext methods name DocumentedItem.linkSource
+    run this.Context.DiscordContext methods name DocumentedItem.linkSource true
 
 
 type DocsInteractionCommand(methods : MethodStore) =
@@ -163,10 +172,10 @@ type DocsInteractionCommand(methods : MethodStore) =
   member this.Docs
     ([<ArgSummary(description = Descriptions.arg); Autocomplete(typedefof<MethodNameAutocompleteHandler>)>] name : string)
     =
-    run this.Context.DiscordContext methods name DocumentedItem.linkDocs
+    run this.Context.DiscordContext methods name DocumentedItem.linkDocs false
 
   [<SlashCommand("source", Descriptions.source)>]
   member this.Source
     ([<ArgSummary(description = Descriptions.arg); Autocomplete(typedefof<MethodNameAutocompleteHandler>)>] name : string)
     =
-    run this.Context.DiscordContext methods name DocumentedItem.linkSource
+    run this.Context.DiscordContext methods name DocumentedItem.linkSource false
