@@ -1,7 +1,4 @@
----
-title: Visual Studio Code setup for ComputerCraft
-search: vscode
----
+# Visual Studio Code setup for ComputerCraft
 [Visual Studio Code](https://code.visualstudio.com) is the preferred code editor for writing ComputerCraft code. A number of extensions are available that improve CC programming:
 
 - [Lua](https://marketplace.visualstudio.com/items?itemName=sumneko.lua) by sumneko adds Lua autocomplete, highlighting, and error checking.

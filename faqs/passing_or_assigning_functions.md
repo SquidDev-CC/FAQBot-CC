@@ -1,7 +1,4 @@
----
-title: Passing or Assigning functions
-search: passing or assigning functions
----
+# Passing or Assigning functions
 A common problem for beginners when programming in lua is assigning a function to another variable, or calling a function which takes a function as a parameter. Often, people will try doing the following:
 
 ```lua

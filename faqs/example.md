@@ -1,7 +1,4 @@
----
-title: Example FAQ
-search: example faq
----
+# Example FAQ
 An empty line, followed by a body containing information, an explanation or an elaboration regarding the subject.
 
 This body can contain a subset of markdown with the following attributes:

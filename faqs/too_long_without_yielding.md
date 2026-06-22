@@ -1,7 +1,4 @@
----
-title: Too long without yielding
-search: error too long without yielding
----
+# Too long without yielding
 Computercraft has a builtin system which stops a single computer from running for too long at a time. After ~7 seconds of nonstop running, your computer will receive an error, "`Too long without yielding`."
 
 If, a few seconds after your program received the initial error, your program still has not yielded (ie: the error was caught by `pcall` or `xpcall`), the computer itself will shut down.

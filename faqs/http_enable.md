@@ -1,7 +1,4 @@
----
-title: How to enable HTTP on >1.12
-search: http
----
+# How to enable HTTP on >1.12
 
 HTTP may be disabled by default on some modpacks. Follow these steps to enable it.
 

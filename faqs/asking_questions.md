@@ -1,7 +1,4 @@
----
-title: How to Ask a Question
-search: ask question
----
+# How to Ask a Question
 Knowing how to effectively ask a question is essential in getting help from others. If you ask a vague question without many details, others have to slowly pry out what exactly you need. By stating everything up front, it's much easier to get answers because those who want to help don't have to ask a bunch of questions just to know what you want.
 
 **1. Give a summary of your problem**

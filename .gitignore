@@ -2,12 +2,5 @@
 /token
 /config.json
 
-# Build ouput
-*.pyc
-/obj
-/bin
-/result
-
-# Editor tooling
-.fake
-.ionide
+# Rust
+/target

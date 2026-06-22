@@ -1,7 +1,4 @@
----
-title: Modifying the ROM with datapacks
-search: datapacks
----
+# Modifying the ROM with datapacks
 
 It's possible to modify ComputerCraft's ROM and bios with additional datapacks.
 

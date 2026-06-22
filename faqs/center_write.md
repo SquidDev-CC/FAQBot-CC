@@ -1,7 +1,4 @@
----
-title: Center-aligning text in ComputerCraft
-search: centering text
----
+# Center-aligning text in ComputerCraft
 There is no builtin function to write text center-aligned in ComputerCraft, but it is not hard to implement such a feature yourself.
 ```lua
 local function centerWrite(text)

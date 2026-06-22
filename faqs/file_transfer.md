@@ -1,7 +1,4 @@
----
-title: Transferring files to and from computers
-search: file transfer open
----
+# Transferring files to and from computers
 
 ComputerCraft computers store their files inside a sandbox, meaning they can't open files on your real computer - only ones that are inside the computer's special folder. However, there are multiple ways to transfer files between your real computer and ComputerCraft.
 
