@@ -190,7 +190,7 @@ pub async fn run_slash(
   interaction.defer(&ctx).await?;
   let response = match submit_code(state, CodeBlockResult::One(code.to_owned()), false).await {
     EvalResult::Failure(err) => {
-      CreateInteractionResponseFollowup::new().content(format!(":bangbang: {err}"))
+      CreateInteractionResponseFollowup::new().content(format!(":bangbang: {err}")).ephemeral(true)
     }
     EvalResult::Success(text, screenshot) => {
       // It's not possible to Rerun this code, as (AFAICT) there's no way to look
@@ -225,7 +225,7 @@ pub async fn run_message(
   let code = code_block::get_code_block(&msg.content).owned();
   let response = match submit_code(state, code, false).await {
     EvalResult::Failure(err) => {
-      CreateInteractionResponseFollowup::new().content(format!(":bangbang: {err}"))
+      CreateInteractionResponseFollowup::new().content(format!(":bangbang: {err}")).ephemeral(true)
     }
     EvalResult::Success(text, screenshot) => CreateInteractionResponseFollowup::new()
       .content(text)
