@@ -163,11 +163,10 @@ pub fn register_slash() -> CreateCommand {
   CreateCommand::new(ID_SLASH)
     .kind(CommandType::ChatInput)
     .description("Evaluate a snippet of code.")
-    .add_option(CreateCommandOption::new(
-      CommandOptionType::String,
-      "code",
-      "The code to evaluate",
-    ))
+    .add_option(
+      CreateCommandOption::new(CommandOptionType::String, "code", "The code to evaluate")
+        .required(true),
+    )
 }
 
 /// Evaluate a snippet of code.
@@ -189,9 +188,9 @@ pub async fn run_slash(
 
   interaction.defer(&ctx).await?;
   let response = match submit_code(state, CodeBlockResult::One(code.to_owned()), false).await {
-    EvalResult::Failure(err) => {
-      CreateInteractionResponseFollowup::new().content(format!(":bangbang: {err}")).ephemeral(true)
-    }
+    EvalResult::Failure(err) => CreateInteractionResponseFollowup::new()
+      .content(format!(":bangbang: {err}"))
+      .ephemeral(true),
     EvalResult::Success(text, screenshot) => {
       // It's not possible to Rerun this code, as (AFAICT) there's no way to look
       // up the original code, so we just drop the buttons.
@@ -224,9 +223,9 @@ pub async fn run_message(
 
   let code = code_block::get_code_block(&msg.content).owned();
   let response = match submit_code(state, code, false).await {
-    EvalResult::Failure(err) => {
-      CreateInteractionResponseFollowup::new().content(format!(":bangbang: {err}")).ephemeral(true)
-    }
+    EvalResult::Failure(err) => CreateInteractionResponseFollowup::new()
+      .content(format!(":bangbang: {err}"))
+      .ephemeral(true),
     EvalResult::Success(text, screenshot) => CreateInteractionResponseFollowup::new()
       .content(text)
       .add_file(CreateAttachment::bytes(screenshot, "image.png"))

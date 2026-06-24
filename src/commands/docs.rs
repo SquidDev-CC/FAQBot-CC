@@ -122,6 +122,7 @@ pub fn register_docs() -> CreateCommand {
     .description("Searches for a function with the current name and returns its documentation.")
     .add_option(
       CreateCommandOption::new(CommandOptionType::String, METHOD_ARG, "The function's name")
+        .required(true)
         .set_autocomplete(true),
     )
 }
@@ -143,6 +144,7 @@ pub fn register_source() -> CreateCommand {
     )
     .add_option(
       CreateCommandOption::new(CommandOptionType::String, METHOD_ARG, "The function's name")
+        .required(true)
         .set_autocomplete(true),
     )
 }
