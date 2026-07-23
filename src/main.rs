@@ -9,6 +9,7 @@ pub use crate::state::State;
 mod cached_request;
 mod commands;
 mod config;
+mod discord;
 mod handler;
 mod lua_definitions;
 mod state;

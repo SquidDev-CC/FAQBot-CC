@@ -1,27 +1,27 @@
+use std::borrow::Cow;
 use std::time::Duration;
 
 use bytes::Bytes;
-use serenity::all::prelude::Context;
-use serenity::builder::{
-  CreateAllowedMentions, CreateCommand, CreateCommandOption, CreateInteractionResponseFollowup,
-  CreateMessage, EditInteractionResponse,
-};
-use serenity::model::Permissions;
-use serenity::model::application::{
-  CommandInteraction, CommandOptionType, CommandType, MessageInteractionMetadata, ResolvedOption,
-  ResolvedTarget, ResolvedValue,
-};
-use serenity::model::channel::{Message, MessageReference};
 use serenity::{
+  all::Context,
   builder::{
-    CreateActionRow, CreateAttachment, CreateButton, CreateInteractionResponse,
-    CreateInteractionResponseMessage,
+    CreateActionRow, CreateAllowedMentions, CreateAttachment, CreateButton, CreateCommand,
+    CreateCommandOption, CreateInteractionResponse, CreateInteractionResponseFollowup,
+    CreateInteractionResponseMessage, CreateMessage, EditInteractionResponse,
   },
-  model::application::{ButtonStyle, ComponentInteraction},
+  model::{
+    Permissions,
+    application::{
+      ButtonStyle, CommandInteraction, CommandOptionType, CommandType, ComponentInteraction,
+      MessageInteractionMetadata, ResolvedOption, ResolvedTarget, ResolvedValue,
+    },
+    channel::Message,
+  },
 };
 
 use crate::commands::eval::code_block::{CodeBlockResult, get_code_block};
 use crate::commands::strip_bot_mention;
+use crate::discord::MessageExt;
 use crate::{InteractionError, State};
 
 pub const ON_RERUN: &str = "on_rerun";
@@ -188,9 +188,11 @@ pub async fn run_slash(
 
   interaction.defer(&ctx).await?;
   let response = match submit_code(state, CodeBlockResult::One(code.to_owned()), false).await {
-    EvalResult::Failure(err) => CreateInteractionResponseFollowup::new()
-      .content(format!(":bangbang: {err}"))
-      .ephemeral(true),
+    EvalResult::Failure(err) => {
+      // Ideally we'd use ephemeral() here, but that doesn't work. See
+      // https://github.com/SquidDev-CC/FAQBot-CC/issues/66
+      CreateInteractionResponseFollowup::new().content(format!(":bangbang: {err}"))
+    }
     EvalResult::Success(text, screenshot) => {
       // It's not possible to Rerun this code, as (AFAICT) there's no way to look
       // up the original code, so we just drop the buttons.
@@ -223,9 +225,11 @@ pub async fn run_message(
 
   let code = code_block::get_code_block(&msg.content).owned();
   let response = match submit_code(state, code, false).await {
-    EvalResult::Failure(err) => CreateInteractionResponseFollowup::new()
-      .content(format!(":bangbang: {err}"))
-      .ephemeral(true),
+    EvalResult::Failure(err) => {
+      // Ideally we'd use ephemeral() here, but that doesn't work. See
+      // https://github.com/SquidDev-CC/FAQBot-CC/issues/66
+      CreateInteractionResponseFollowup::new().content(format!(":bangbang: {err}"))
+    }
     EvalResult::Success(text, screenshot) => CreateInteractionResponseFollowup::new()
       .content(text)
       .add_file(CreateAttachment::bytes(screenshot, "image.png"))
@@ -287,7 +291,7 @@ pub async fn eval_from_ping(
 ///
 /// Moderators and the original author (either of the interaction or the target
 /// message) can use these controls.
-fn can_interact(interaction: &ComponentInteraction) -> bool {
+fn can_interact(interaction: &ComponentInteraction, original_message: Option<&Message>) -> bool {
   if interaction
     .member
     .as_ref()
@@ -311,23 +315,34 @@ fn can_interact(interaction: &ComponentInteraction) -> bool {
 
   // If this is a message command, and then the author of the original message
   // can also run this.
-  if let Some(message) = &interaction.message.referenced_message
-    && message.author == interaction.user
-  {
-    tracing::info!("User wrote the original message ");
+  if original_message.is_some_and(|x| x.author == interaction.user) {
+    tracing::debug!("User wrote the original message ");
     return true;
   }
 
-  tracing::warn!("User does not have permission");
+  tracing::warn!(
+    author = original_message.map(|x| &x.author.name),
+    "User does not have permission"
+  );
   false
 }
 
-async fn check_interact(
-  ctx: &Context,
-  interaction: &ComponentInteraction,
-) -> Option<Result<(), InteractionError>> {
-  if !can_interact(interaction) {
-    Some(
+/// Get the original message containing the code for this component interaction,
+/// then check the user can actually perform the interaction.
+async fn check_interaction<'a>(
+  ctx: &'a Context,
+  interaction: &'a ComponentInteraction,
+) -> Result<Option<Cow<'a, Message>>, Result<(), InteractionError>> {
+  let original_message = match interaction.message.find_reply(ctx).await {
+    Ok(x) => x,
+    Err(err) => {
+      tracing::error!(?err, "Failed to find original message");
+      None
+    }
+  };
+
+  if !can_interact(interaction, original_message.as_deref()) {
+    Err(
       interaction
         .create_response(
           &ctx,
@@ -341,40 +356,7 @@ async fn check_interact(
         .map_err(Into::into),
     )
   } else {
-    None
-  }
-}
-
-/// Find the original code for a "Rerun" command.
-async fn rerun_find_original_code(
-  ctx: &Context,
-  interaction: &ComponentInteraction,
-) -> Option<CodeBlockResult<String>> {
-  fn get_code(ctx: &Context, message: &str) -> CodeBlockResult<String> {
-    let message = strip_bot_mention(ctx, message).unwrap_or(message);
-    get_code_block(message).owned()
-  }
-
-  if let Some(reply_to) = &interaction.message.referenced_message {
-    // If we're a reply and we have a referenced_message, use that.
-    Some(get_code(ctx, &reply_to.content))
-  } else if let Some(MessageReference {
-    channel_id,
-    message_id: Some(message_id),
-    ..
-  }) = &interaction.message.message_reference
-  {
-    // If we're a reply (and don't have a referenced message), look the message up.
-    if let Some(message) = ctx.cache.message(channel_id, message_id) {
-      Some(get_code(ctx, &message.content))
-    } else if let Ok(message) = ctx.http.get_message(*channel_id, *message_id).await {
-      Some(get_code(ctx, &message.content))
-    } else {
-      None
-    }
-  } else {
-    // Otherwise we can't find the message content.
-    None
+    Ok(original_message)
   }
 }
 
@@ -384,28 +366,30 @@ pub async fn rerun(
   ctx: &Context,
   interaction: &ComponentInteraction,
 ) -> Result<(), InteractionError> {
-  if let Some(res) = check_interact(ctx, interaction).await {
-    return res;
-  }
-
-  let Some(code) = rerun_find_original_code(ctx, interaction).await else {
-    interaction
-      .create_response(
-        &ctx,
-        CreateInteractionResponse::Message(
-          CreateInteractionResponseMessage::new()
-            .content("Cannot find the original message!")
-            .ephemeral(true),
-        ),
-      )
-      .await?;
-
-    return Ok(());
+  let message = match check_interaction(ctx, interaction).await {
+    Ok(Some(x)) => x,
+    Ok(None) => {
+      return interaction
+        .create_response(
+          &ctx,
+          CreateInteractionResponse::Message(
+            CreateInteractionResponseMessage::new()
+              .content(":bangbang: Cannot find the original message!")
+              .ephemeral(true),
+          ),
+        )
+        .await
+        .map_err(Into::into);
+    }
+    Err(err) => return err,
   };
 
   interaction
     .create_response(&ctx, CreateInteractionResponse::Acknowledge)
     .await?;
+
+  let message = strip_bot_mention(ctx, &message.content).unwrap_or(&message.content);
+  let code = get_code_block(message).owned();
 
   match submit_code(state, code, false).await {
     EvalResult::Failure(err) => {
@@ -433,9 +417,9 @@ pub async fn delete(
   ctx: &Context,
   interaction: &ComponentInteraction,
 ) -> Result<(), InteractionError> {
-  if let Some(res) = check_interact(ctx, interaction).await {
-    return res;
-  }
+  if let Err(err) = check_interaction(ctx, interaction).await {
+    return err;
+  };
 
   interaction.message.delete(&ctx).await?;
   interaction
