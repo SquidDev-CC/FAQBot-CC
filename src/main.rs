@@ -38,9 +38,7 @@ async fn main() -> anyhow::Result<()> {
     serde_json::from_reader(std::fs::File::open("config.json").context("Opening config file")?)
       .context("Parsing config file")?;
 
-  let intents = GatewayIntents::GUILD_MESSAGES
-    | GatewayIntents::DIRECT_MESSAGES
-    | GatewayIntents::MESSAGE_CONTENT;
+  let intents = GatewayIntents::GUILD_MESSAGES | GatewayIntents::DIRECT_MESSAGES;
 
   // Start and run our Discord bot.
   Client::builder(&config.token, intents)

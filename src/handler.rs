@@ -4,7 +4,7 @@ use serenity::{
     prelude::{Context, EventHandler},
   },
   async_trait,
-  builder::{CreateAllowedMentions, CreateInteractionResponse, CreateMessage},
+  builder::CreateInteractionResponse,
   model::{
     application::{Command, CommandDataOptionValue, Interaction},
     channel::Message,
@@ -68,9 +68,7 @@ impl EventHandler for Handler {
   }
 
   async fn message(&self, ctx: Context, msg: Message) {
-    if msg.content.starts_with('%') {
-      handle_legacy_command(&ctx, &msg).await;
-    } else if let Some(content) = strip_bot_mention(&ctx, &msg.content) {
+    if let Some(content) = strip_bot_mention(&ctx, &msg.content) {
       let span = tracing::info_span!("Eval", user = msg.author.name);
       async {
         if let Err(err) = commands::eval::eval_from_ping(&self.state, &ctx, &msg, content).await {
@@ -176,34 +174,4 @@ impl EventHandler for Handler {
       _ => (),
     }
   }
-}
-
-/// Handle a legacy `%` command, warning the user this is no longer supported.
-async fn handle_legacy_command(ctx: &Context, msg: &Message) -> () {
-  async fn report_command(ctx: &Context, msg: &Message, alternative: &str) {
-    let reply  = CreateMessage::new()
-        .content(format!(
-            ":warning: % commands have been removed due to changes in bot verification. Please {alternative} instead. \
-            See [this issue](<https://github.com/SquidDev-CC/FAQBot-CC/issues/65>) for more details."
-        ))
-        .allowed_mentions(CreateAllowedMentions::new().replied_user(false))
-        .reference_message(msg);
-
-    if let Err(err) = msg.channel_id.send_message(ctx, reply).await {
-      tracing::error!(?err, "Error sending message")
-    }
-  }
-  let first_word = match msg.content.split_once(' ') {
-    None => &msg.content,
-    Some((x, _)) => x,
-  };
-
-  match first_word {
-    "%about" => report_command(ctx, msg, "use `/ccfaq`").await,
-    "%docs" | "%d" => report_command(ctx, msg, "use `/docs`").await,
-    "%source" | "%s" => report_command(ctx, msg, "use `/source`").await,
-    "%faq" | "%f" | "%info" | "%i" => report_command(ctx, msg, "use `/faq`").await,
-    "%eval" | "%exec" | "%code" => report_command(ctx, msg, "use `/eval` or tag the bot").await,
-    _ => (),
-  };
 }
