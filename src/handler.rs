@@ -1,8 +1,5 @@
 use serenity::{
-  all::{
-    Guild,
-    prelude::{Context, EventHandler},
-  },
+  all::prelude::{Context, EventHandler},
   async_trait,
   builder::CreateInteractionResponse,
   model::{
@@ -37,7 +34,11 @@ impl Handler {
 #[async_trait]
 impl EventHandler for Handler {
   async fn ready(&self, ctx: Context, ready: Ready) {
-    tracing::info!("{} is connected!", ready.user.name);
+    tracing::info!(
+      guilds = ready.guilds.len(),
+      username = ready.user.name,
+      "Bot is connected!"
+    );
 
     let commands = vec![
       commands::about::register(),
@@ -53,18 +54,6 @@ impl EventHandler for Handler {
       Command::set_global_commands(&ctx, commands).await
     }
     .expect("Failed to register commands");
-
-    for guild in ready.guilds {
-      if let Some(guild) = ctx.cache.guild(guild.id) {
-        tracing::info!(guild = guild.name, "Connected to guild");
-      } else if let Ok(guild) = ctx.http.get_guild(guild.id).await {
-        tracing::info!(guild = guild.name, "Connected to guild");
-      };
-    }
-  }
-
-  async fn guild_create(&self, _ctx: Context, guild: Guild, _is_new: Option<bool>) {
-    tracing::info!(guild = guild.name, "Connected to guild");
   }
 
   async fn message(&self, ctx: Context, msg: Message) {
@@ -86,8 +75,6 @@ impl EventHandler for Handler {
         let command_name = command.data.name.clone();
         let span = tracing::info_span!("Command", command = command_name, user = command.user.name);
         async move {
-          tracing::info!("Received command");
-
           use commands;
           let result = match command_name.as_str() {
             commands::about::ID => commands::about::run(&self.state, ctx, command).await,
@@ -154,8 +141,6 @@ impl EventHandler for Handler {
           user = component.user.name,
         );
         async {
-          tracing::info!("Received component interaction");
-
           let result = match component.data.custom_id.as_str() {
             commands::eval::ON_RERUN => commands::eval::rerun(&self.state, &ctx, &component).await,
             commands::eval::ON_DELETE => commands::eval::delete(&ctx, &component).await,

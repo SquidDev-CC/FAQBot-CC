@@ -18,5 +18,17 @@ instance, and must be self-hosted.
  - Create `config.json` file containing `{"token": "<your discord token>"}`.
  - Run the bot with `./FAQBot-CC`.
 
+## Terms of Service
+The bot has no additional terms of service on top of Discord's own.
+
+## Privacy Policy
+The bot logs some information in the event of an error. This includes the
+username of the user who interacted with the bot, but does *not* include message
+content. This information is used for debugging purposes, and is not shared with
+any third parties.
+
+You can [contact the developer via email or IRC](https://squiddev.cc/) if you
+have any concerns.
+
 [mcm]: https://discord.computercraft.cc "The Minecraft Computer Mods Discord"
 [eval.tweaked.cc]: https://github.com/cc-tweaked/eval.tweaked.cc
